@@ -125,14 +125,15 @@ export class LoginPage implements OnInit, AfterViewInit {
   showPassword = false;
   loading = false; // Adicionado para compatibilidade com novo template
   isLoading = false;
-  lembrarSenha = false; // Nova opção para lembrar senha
   loginProgress = 0;
   hasUpdate = false;
   connectionStatus = true;
   showStats = false;
   currentDate = new Date();
-  currentVersion = "1.0.12";
+  currentVersion = "1.0.13";
   shakeButton = false;
+  logoLoaded = true; // Para controlar exibição da logo vs texto
+  lembrarSenha = false; // Controle do checkbox lembrar-me
 
   // Mensagens dinâmicas
   loginMessage: { text: string; type: "success" | "error" | "info" } | null =
@@ -147,7 +148,6 @@ export class LoginPage implements OnInit, AfterViewInit {
   // Particulas
   private particles: any[] = [];
   private animationId: number = 0;
-  private logoutListener: any = null;
 
   constructor(
     public router: Router,
@@ -175,6 +175,9 @@ export class LoginPage implements OnInit, AfterViewInit {
     this.authservice.checkPlatform();
     this.setupEventListeners();
 
+    // Carregar dados salvos se "lembrar-me" estava marcado
+    this.carregarDadosSalvos();
+
     // Verificar atualizações
     this.checkForUpdates();
 
@@ -187,17 +190,6 @@ export class LoginPage implements OnInit, AfterViewInit {
     // Configurar PWA
     this.setupPWA();
 
-    // Carregar credenciais salvas
-    this.loadSavedCredentials();
-
-    // Escutar evento de logout para recarregar credenciais
-    this.logoutListener = () => {
-      console.log("Evento logout detectado - recarregando credenciais");
-      this.loadSavedCredentials();
-      // Não limpar senha aqui - deixar loadSavedCredentials decidir
-    };
-    window.addEventListener("userLoggedOut", this.logoutListener);
-
     if (browserRefresh === true) {
       this.authservice.destroyToken();
     }
@@ -206,6 +198,21 @@ export class LoginPage implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.initParticles();
     this.startAmbientAnimations();
+  }
+
+  private carregarDadosSalvos(): void {
+    const lembrar = window.localStorage.getItem("lembrarSenha");
+
+    if (lembrar === "true") {
+      const usuarioSalvo = window.localStorage.getItem("usuarioSalvo");
+      const senhaSalva = window.localStorage.getItem("senhaSalva");
+
+      if (usuarioSalvo && senhaSalva) {
+        this.user.nom_usuario = usuarioSalvo;
+        this.senha = senhaSalva;
+        this.lembrarSenha = true;
+      }
+    }
   }
 
   ngOnDestroy() {
@@ -228,7 +235,6 @@ export class LoginPage implements OnInit, AfterViewInit {
     console.log("Login attempt:", {
       usuario: this.user.nom_usuario,
       senhaHash: senhaHash.substring(0, 8) + "...", // Log parcial por segurança
-      endpoint: this.authservice["baseURL"] + "/login",
     });
 
     // Executar login
@@ -299,13 +305,6 @@ export class LoginPage implements OnInit, AfterViewInit {
       window.localStorage.setItem("auth", data.auth);
       window.localStorage.setItem("token", data.token);
 
-      // Salvar credenciais se opção marcada
-      if (this.lembrarSenha) {
-        this.saveCredentials();
-      } else {
-        this.clearSavedCredentials();
-      }
-
       // Adicionar informações extras ao localStorage
       window.localStorage.setItem(
         "userInfo",
@@ -314,6 +313,18 @@ export class LoginPage implements OnInit, AfterViewInit {
           loginTime: new Date().toISOString(),
         }),
       );
+
+      // Salvar credenciais se "lembrar-me" estiver marcado
+      if (this.lembrarSenha) {
+        window.localStorage.setItem("lembrarSenha", "true");
+        window.localStorage.setItem("usuarioSalvo", this.user.nom_usuario);
+        window.localStorage.setItem("senhaSalva", this.senha);
+      } else {
+        // Limpar dados salvos se não marcar lembrar
+        window.localStorage.removeItem("lembrarSenha");
+        window.localStorage.removeItem("usuarioSalvo");
+        window.localStorage.removeItem("senhaSalva");
+      }
     }
 
     if (data && data.user && data.user[0]) {
@@ -328,59 +339,33 @@ export class LoginPage implements OnInit, AfterViewInit {
   private handleLoginComplete(): void {
     this.loginProgress = 100;
 
-    console.log("Login complete - userLogado:", this.authservice.userLogado);
-
     // Conectar WebSocket
     this.socket.socketCon();
 
     // Pequeno delay para mostrar animação de sucesso
-    setTimeout(async () => {
-      try {
-        await this.loadingCtrl.dismiss();
-      } catch (e) {
-        // Ignorar erro se não houver loading
-      }
+    setTimeout(() => {
+      this.loadingCtrl.dismiss().catch(() => {});
       this.isLoading = false;
-      this.loading = false;
 
       // Navegar para home
       if (this.authservice.userLogado?.schema) {
-        console.log(
-          "Navegando para home com schema:",
-          this.authservice.userLogado.schema,
-        );
         setTimeout(() => {
           this.goToHome(this.authservice.userLogado.schema);
         }, 500);
-      } else {
-        console.error("Schema não encontrado no userLogado");
-        this.showMessage("Erro ao carregar dados do usuário", "error");
       }
     }, 1000);
   }
 
   private handleLoginError(error: any): void {
     this.isLoading = false;
-    this.loading = false;
     this.loginProgress = 0;
     this.triggerShakeAnimation();
-
-    console.error("Erro completo do login:", error);
-    console.error("Status:", error.status);
-    console.error("Mensagem:", error.error);
 
     const errorMessage = this.getErrorMessage(error);
     this.showMessage(errorMessage, "error");
 
     // Tentar fazer dismiss do loading se existir
-    this.loadingCtrl
-      .getTop()
-      .then((loading) => {
-        if (loading) {
-          loading.dismiss();
-        }
-      })
-      .catch(() => {});
+    this.loadingCtrl.dismiss().catch(() => {});
 
     // Mostrar toast com alert service
     this.alert.presentToast(errorMessage, 4000);
@@ -395,14 +380,6 @@ export class LoginPage implements OnInit, AfterViewInit {
     }
 
     if (error.status === 401) {
-      return "Usuário ou senha incorretos.";
-    }
-
-    if (error.status === 500) {
-      // Servidor retorna 500 para credenciais inválidas
-      if (error.error?.message) {
-        return error.error.message;
-      }
       return "Usuário ou senha incorretos.";
     }
 
@@ -591,9 +568,6 @@ export class LoginPage implements OnInit, AfterViewInit {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
-    if (this.logoutListener) {
-      window.removeEventListener("userLoggedOut", this.logoutListener);
-    }
     this.subscriptions.unsubscribe();
   }
 
@@ -667,22 +641,12 @@ export class LoginPage implements OnInit, AfterViewInit {
   }
 
   goToHome(schema: string) {
-    console.log("goToHome chamado com schema:", schema);
-    console.log("Token no localStorage:", window.localStorage.getItem("token"));
-
-    this.router
-      .navigate(["/home"], {
-        queryParams: {
-          schema: schema,
-          timestamp: Date.now(), // Evitar cache
-        },
-      })
-      .then((success) => {
-        console.log("Navegação para /home:", success ? "SUCESSO" : "FALHOU");
-      })
-      .catch((err) => {
-        console.error("Erro ao navegar para /home:", err);
-      });
+    this.router.navigate(["/home"], {
+      queryParams: {
+        schema: schema,
+        timestamp: Date.now(), // Evitar cache
+      },
+    });
   }
 
   async forcarAtualizacao() {
@@ -721,50 +685,13 @@ export class LoginPage implements OnInit, AfterViewInit {
     this.passwordFocused = focused;
   }
 
-  // ============== MÉTODOS DE CREDENCIAIS SALVAS ==============
-  private loadSavedCredentials(): void {
-    const savedUsername = localStorage.getItem("savedUsername");
-    const savedPassword = localStorage.getItem("savedPassword");
-    const rememberPassword = localStorage.getItem("rememberPassword");
-
-    if (rememberPassword === "true" && savedUsername) {
-      this.user.nom_usuario = savedUsername;
-      this.lembrarSenha = true;
-
-      if (savedPassword) {
-        // Descriptografar senha (base64 simples)
-        try {
-          this.senha = atob(savedPassword);
-        } catch (e) {
-          console.error("Erro ao carregar senha salva:", e);
-          this.senha = "";
-        }
-      } else {
-        this.senha = "";
-      }
-    } else {
-      // Se não tem credenciais salvas, limpar campos
-      this.user.nom_usuario = "";
-      this.senha = "";
-      this.lembrarSenha = false;
-    }
-  }
-
-  private saveCredentials(): void {
-    localStorage.setItem("savedUsername", this.user.nom_usuario);
-    // Criptografar senha (base64 simples)
-    localStorage.setItem("savedPassword", btoa(this.senha));
-    localStorage.setItem("rememberPassword", "true");
-  }
-
-  private clearSavedCredentials(): void {
-    localStorage.removeItem("savedUsername");
-    localStorage.removeItem("savedPassword");
-    localStorage.removeItem("rememberPassword");
-  }
-
   togglePassword() {
     this.showPassword = !this.showPassword;
+  }
+
+  // Método para controlar erro de carregamento da logo
+  onLogoError(event: Event) {
+    this.logoLoaded = false;
   }
 
   // Método para login por teclado
@@ -778,6 +705,13 @@ export class LoginPage implements OnInit, AfterViewInit {
   clearForm() {
     this.user.nom_usuario = "";
     this.senha = "";
+    this.lembrarSenha = false;
+
+    // Limpar dados salvos do localStorage
+    window.localStorage.removeItem("lembrarSenha");
+    window.localStorage.removeItem("usuarioSalvo");
+    window.localStorage.removeItem("senhaSalva");
+
     this.showMessage("Formulário limpo", "info");
   }
 }

@@ -81,13 +81,26 @@ export class AuthService {
     try {
       console.log("DestroyToken executado - Limpando sessão");
 
-      // Limpa localStorage (mas preserva credenciais salvas)
+      // Verifica se deve manter credenciais salvas
+      const lembrarSenha = localStorage.getItem("lembrarSenha");
+
+      // Limpa localStorage (mas preserva credenciais salvas se marcado)
       const keysToRemove = ["auth", "token", "userInfo"];
 
       keysToRemove.forEach((key) => {
         localStorage.removeItem(key);
         console.log(`Removido: ${key}`);
       });
+
+      // Se NÃO estava marcado "lembrar-me", limpa as credenciais também
+      if (lembrarSenha !== "true") {
+        localStorage.removeItem("lembrarSenha");
+        localStorage.removeItem("usuarioSalvo");
+        localStorage.removeItem("senhaSalva");
+        console.log("Credenciais removidas (lembrar-me não estava marcado)");
+      } else {
+        console.log("Credenciais preservadas (lembrar-me está marcado)");
+      }
 
       // Disconecta socket
       if (this.socket && this.userLogado.nom_usuario) {
