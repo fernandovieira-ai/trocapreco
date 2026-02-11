@@ -1,0 +1,531 @@
+// Importar variáveis de tema
+@import "../../theme/colors.scss";
+
+// ===============================
+// LOGIN CONTAINER
+// ===============================
+.login-container {
+  --background: transparent;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+// ===============================
+// GRADIENTE DE FUNDO
+// ===============================
+.gradient-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, $gradient-start 0%, $gradient-end 100%);
+  z-index: 0;
+}
+
+// Canvas de partículas (opcional)
+.particles-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+// ===============================
+// WRAPPER PRINCIPAL
+// ===============================
+.login-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  padding: $spacing-lg;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+// ===============================
+// HEADER SECTION
+// ===============================
+.header-section {
+  text-align: center;
+  margin-bottom: $spacing-md;
+  animation: fadeInDown 0.8s ease-out;
+
+  .logo-container {
+    margin-bottom: $spacing-md;
+
+    .app-logo {
+      width: 120px;
+      height: auto;
+      margin: 0 auto;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      animation: float 6s ease-in-out infinite;
+    }
+  }
+
+  .app-title {
+    color: $text-white;
+    font-size: $font-3xl;
+    font-weight: $font-bold;
+    margin: 0 0 $spacing-xs 0;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .app-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: $font-lg;
+    font-weight: $font-regular;
+    margin: 0 0 $spacing-md 0;
+  }
+
+  .version-chip {
+    --background: rgba(255, 255, 255, 0.15);
+    --color: $text-white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: $spacing-sm;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    .update-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+// ===============================
+// CARD DE LOGIN
+// ===============================
+.login-card {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  width: 100%;
+  box-shadow:
+    $shadow-xl,
+    0 0 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+// ===============================
+// MENSAGEM DE FEEDBACK
+// ===============================
+.message-container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-lg;
+  font-size: $font-sm;
+  animation: slideInDown 0.3s ease-out;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  ion-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  &.message-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: rgba(255, 255, 255, 0.95);
+
+    ion-icon {
+      color: #fca5a5;
+    }
+  }
+
+  &.message-success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: rgba(255, 255, 255, 0.95);
+
+    ion-icon {
+      color: #86efac;
+    }
+  }
+
+  &.message-info {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: rgba(255, 255, 255, 0.95);
+
+    ion-icon {
+      color: #93c5fd;
+    }
+  }
+}
+
+// ===============================
+// FORMULÁRIO
+// ===============================
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  .input-label {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    margin-left: $spacing-xs;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .input-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    padding: 0 $spacing-md;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    &.focused {
+      border-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .input-icon {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 20px;
+      margin-right: $spacing-sm;
+      transition: color 0.3s ease;
+    }
+
+    &.focused .input-icon {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .custom-input {
+      flex: 1;
+      --background: transparent;
+      --color: rgba(255, 255, 255, 0.95);
+      --placeholder-color: rgba(255, 255, 255, 0.6);
+      --placeholder-opacity: 1;
+      --padding-start: 0;
+      --padding-end: 0;
+      font-size: $font-md;
+
+      ion-input {
+        --background: transparent !important;
+      }
+    }
+
+    .toggle-password-icon {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      padding: $spacing-xs;
+      margin-left: $spacing-xs;
+
+      &:hover {
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
+
+// ===============================
+// CHECKBOX LEMBRAR SENHA
+// ===============================
+.remember-wrapper {
+  margin: $spacing-md 0;
+  display: flex;
+  align-items: center;
+
+  .remember-checkbox {
+    --size: 20px;
+    --checkbox-background: rgba(255, 255, 255, 0.2);
+    --checkbox-background-checked: rgba(255, 255, 255, 0.95);
+    --border-color: rgba(255, 255, 255, 0.5);
+    --border-color-checked: rgba(255, 255, 255, 0.95);
+    --checkmark-color: #24024b;
+    --border-radius: 4px;
+    --border-width: 2px;
+    margin: 0;
+
+    .remember-label {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: $font-sm;
+      margin-left: $spacing-sm;
+      user-select: none;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+// ===============================
+// BOTÕES
+// ===============================
+.login-button {
+  --background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+  --background-hover: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  --background-activated: rgba(255, 255, 255, 0.8);
+  --color: #24024b;
+  --border-radius: #{$radius-md};
+  --box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --padding-top: #{$spacing-md};
+  --padding-bottom: #{$spacing-md};
+  margin-top: $spacing-md;
+  font-weight: $font-semibold;
+  font-size: $font-md;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+
+  &:disabled {
+    --background: rgba(255, 255, 255, 0.3);
+    --color: rgba(255, 255, 255, 0.6);
+    opacity: 0.5;
+  }
+
+  ion-spinner {
+    width: 20px;
+    height: 20px;
+    --color: #24024b;
+  }
+}
+
+.install-button {
+  --border-color: rgba(255, 255, 255, 0.8);
+  --color: rgba(255, 255, 255, 0.95);
+  --border-radius: #{$radius-md};
+  --background-hover: rgba(255, 255, 255, 0.1);
+  margin-top: $spacing-md;
+  font-weight: $font-medium;
+}
+
+// ===============================
+// PWA SECTION
+// ===============================
+.pwa-section {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-xl;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+
+  .pwa-message {
+    margin-bottom: $spacing-md;
+
+    .pwa-icon {
+      font-size: 48px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: $spacing-sm;
+    }
+
+    p {
+      margin: $spacing-xs 0;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: $font-md;
+      font-weight: $font-medium;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .pwa-text-small {
+      font-size: $font-sm;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: $font-regular;
+      line-height: 1.5;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+      ion-icon {
+        vertical-align: middle;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+// ===============================
+// FOOTER
+// ===============================
+.footer-section {
+  text-align: center;
+  margin-top: $spacing-lg;
+
+  .footer-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: $font-sm;
+    margin: 0;
+  }
+}
+
+// ===============================
+// ANIMAÇÕES
+// ===============================
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// ===============================
+// RESPONSIVIDADE
+// ===============================
+@media (max-width: 768px) {
+  .login-wrapper {
+    padding: $spacing-md;
+  }
+
+  .login-card {
+    padding: $spacing-lg;
+  }
+
+  .header-section {
+    .app-title {
+      font-size: $font-2xl;
+    }
+
+    .app-subtitle {
+      font-size: $font-md;
+    }
+
+    .logo-container .app-logo {
+      width: 100px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: $spacing-sm;
+  }
+
+  .login-card {
+    padding: $spacing-md;
+  }
+
+  .header-section {
+    .app-title {
+      font-size: $font-xl;
+    }
+
+    .logo-container .app-logo {
+      width: 80px;
+    }
+  }
+}

@@ -1,0 +1,495 @@
+<ion-header [translucent]="true" mode="ios" class="custom-header">
+  <ion-toolbar class="main-toolbar">
+    <!-- Título e informações do usuário -->
+    <div class="header-content">
+      <div class="user-section">
+        <div class="user-avatar">
+          <ion-icon name="person-circle-outline"></ion-icon>
+        </div>
+        <div class="user-info">
+          <h1 class="welcome-text">Olá, {{auth.userLogado?.nom_usuario}}</h1>
+          <p class="company-text">{{auth.userLogado?.des_rede}}</p>
+        </div>
+      </div>
+
+      <!-- Botões de ação -->
+      <div class="header-actions">
+        <ion-button
+          *ngIf="auth.userLogado.cod_usuario === 466"
+          class="modern-action-button sync-button"
+          fill="solid"
+          size="small"
+          (click)="atualizaRegistro()"
+          [disabled]="isSyncInProgress"
+        >
+          <ion-icon
+            slot="start"
+            [name]="isSyncInProgress ? 'sync-outline' : 'cloud-download-outline'"
+            [class.spinning]="isSyncInProgress"
+          ></ion-icon>
+          <span class="button-label">
+            {{isSyncInProgress ? 'Sincronizando...' : 'Atualizar Dados'}}
+          </span>
+          <ion-spinner
+            *ngIf="isSyncInProgress"
+            name="crescent"
+            slot="end"
+            class="sync-spinner"
+          ></ion-spinner>
+        </ion-button>
+        <ion-button
+          *ngIf="auth.userLogado.cod_usuario === 466"
+          class="modern-action-button users-button"
+          fill="outline"
+          size="small"
+          (click)="abrirUsuarios()"
+        >
+          <ion-icon slot="start" name="people-outline"></ion-icon>
+          <span class="button-label">Usuários</span>
+        </ion-button>
+        <ion-button
+          class="modern-action-button logout-button"
+          fill="outline"
+          size="small"
+          (click)="logout()"
+        >
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <span class="button-label">Sair</span>
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" mode="ios" class="home-content">
+  <!-- Gradiente de fundo -->
+  <div class="gradient-overlay"></div>
+
+  <!-- Conteúdo principal -->
+  <div class="content-wrapper" [ngClass]="{'desktop-mode': !auth.isMobile}">
+    <!-- Card de Seleção de Empresas -->
+    <div class="info-card">
+      <div class="card-header">
+        <ion-icon name="business-outline" class="card-icon"></ion-icon>
+        <div class="card-title-section">
+          <h2 class="card-title">Empresas</h2>
+          <p class="card-subtitle">Selecione as empresas para trabalhar</p>
+        </div>
+      </div>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        class="select-button"
+        id="open-modal-empresas"
+      >
+        <ion-icon slot="start" name="apps-outline"></ion-icon>
+        Selecionar Empresas
+        <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+
+      <!-- Lista de Empresas Selecionadas -->
+      <div
+        class="selected-companies-section"
+        *ngIf="auth.userLogado.cod_empresa_usuario?.length > 0"
+      >
+        <div class="section-divider">
+          <div class="divider-text">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span
+              >{{auth.userLogado.cod_empresa_usuario.length}} Empresa(s)
+              Ativa(s)</span
+            >
+          </div>
+        </div>
+
+        <div class="selected-companies-list">
+          <div
+            *ngFor="let empresa of auth.userLogado.cod_empresa_usuario"
+            class="company-chip-compact"
+          >
+            <ion-icon name="business" class="company-icon-small"></ion-icon>
+            <div class="company-info-compact">
+              <span class="company-name-small">{{empresa.nom_fantasia}}</span>
+              <span class="company-code-small">{{empresa.cod_empresa}}</span>
+            </div>
+            <ion-icon
+              name="checkmark-circle"
+              color="success"
+              class="check-icon"
+            ></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado Vazio -->
+      <div
+        class="empty-state"
+        *ngIf="auth.userLogado.cod_empresa_usuario?.length === 0"
+      >
+        <ion-icon name="alert-circle-outline" class="empty-icon"></ion-icon>
+        <p class="empty-text">Nenhuma empresa selecionada</p>
+        <p class="empty-hint">Clique no botão acima para selecionar</p>
+      </div>
+    </div>
+
+    <!-- Seção de Funcionalidades -->
+    <div class="section-header">
+      <h2 class="section-title">Funcionalidades</h2>
+      <p class="section-subtitle">O que vamos realizar hoje?</p>
+    </div>
+
+    <!-- Grid de Funcionalidades -->
+    <div class="features-grid">
+      <!-- Troca de Preços -->
+      <div
+        class="feature-card"
+        routerLink="/home/precobomba"
+        [class.disabled]="auth.userLogado.cod_empresa_usuario.length <= 0"
+      >
+        <div class="feature-icon-container primary">
+          <ion-icon name="swap-horizontal-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">Troca de Preços</h3>
+          <p class="feature-description">Altere seus preços de bomba</p>
+        </div>
+        <ion-icon name="chevron-forward" class="feature-arrow"></ion-icon>
+      </div>
+
+      <!-- Inclusão de Negociações -->
+      <div
+        class="feature-card"
+        routerLink="/home/filtro"
+        [class.disabled]="auth.userLogado.cod_empresa_usuario.length <= 0"
+      >
+        <div class="feature-icon-container success">
+          <ion-icon name="add-circle-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">Inclusão de Negociações</h3>
+          <p class="feature-description">Crie novas negociações de preços</p>
+        </div>
+        <ion-icon name="chevron-forward" class="feature-arrow"></ion-icon>
+      </div>
+
+      <!-- Aprovação de Negociações -->
+      <div
+        class="feature-card"
+        routerLink="/home/aprovacao-negociacao"
+        [class.disabled]="auth.userLogado.cod_empresa_usuario.length <= 0"
+      >
+        <div class="feature-icon-container warning">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">Aprovação de Negociações</h3>
+          <p class="feature-description">
+            Aprove ou rejeite negociações pendentes
+          </p>
+        </div>
+        <ion-icon name="chevron-forward" class="feature-arrow"></ion-icon>
+      </div>
+
+      <!-- Histórico -->
+      <div
+        class="feature-card"
+        routerLink="/home/historico"
+        [class.disabled]="auth.userLogado.cod_empresa_usuario.length <= 0"
+      >
+        <div class="feature-icon-container info">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">Histórico</h3>
+          <p class="feature-description">Visualize o histórico de alterações</p>
+        </div>
+        <ion-icon name="chevron-forward" class="feature-arrow"></ion-icon>
+      </div>
+
+      <!-- Atualização de Filtros -->
+      <div
+        class="feature-card"
+        routerLink="/home/filtro-atualizacao"
+        [class.disabled]="auth.userLogado.cod_empresa_usuario.length <= 0"
+      >
+        <div class="feature-icon-container secondary">
+          <ion-icon name="filter-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">Atualização de Filtros</h3>
+          <p class="feature-description">Gerencie filtros de consulta</p>
+        </div>
+        <ion-icon name="chevron-forward" class="feature-arrow"></ion-icon>
+      </div>
+
+      <!-- Atualização de Preços -->
+      <div
+        class="feature-card"
+        routerLink="/home/preco-atualizacao"
+        [class.disabled]="auth.userLogado.cod_empresa_usuario.length <= 0"
+      >
+        <div class="feature-icon-container tertiary">
+          <ion-icon name="pricetag-outline"></ion-icon>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">Atualização de Preços</h3>
+          <p class="feature-description">Atualize preços rapidamente</p>
+        </div>
+        <ion-icon name="chevron-forward" class="feature-arrow"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Seleção de Empresas -->
+  <ion-modal trigger="open-modal-empresas" mode="ios" class="empresa-modal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar class="modal-toolbar">
+          <ion-title class="modal-title-modern">
+            <div class="title-content">
+              <ion-icon name="business"></ion-icon>
+              <span>Seleção de Empresas</span>
+            </div>
+          </ion-title>
+          <ion-buttons slot="end">
+            <ion-button
+              (click)="cancel()"
+              fill="clear"
+              class="close-button-modern"
+            >
+              <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-toolbar class="search-toolbar">
+          <ion-searchbar
+            [debounce]="300"
+            (ionInput)="pesquisaEmpresa($event)"
+            animated="true"
+            placeholder="Buscar por nome ou código"
+            class="custom-searchbar"
+          >
+          </ion-searchbar>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <div class="empresa-list">
+          <div
+            *ngFor="let item of empresasFiltradas"
+            class="empresa-item"
+            [class.selected]="item.ind_selecionado"
+            (click)="toggleEmpresa(item)"
+          >
+            <div class="empresa-icon-wrapper">
+              <div class="empresa-icon-circle">
+                <ion-icon name="business"></ion-icon>
+              </div>
+            </div>
+
+            <div class="empresa-info">
+              <h3 class="empresa-nome">{{item.nom_fantasia}}</h3>
+              <p class="empresa-codigo">
+                <ion-icon name="barcode-outline"></ion-icon>
+                Código: {{item.cod_empresa}}
+              </p>
+            </div>
+
+            <div class="checkbox-wrapper">
+              <ion-checkbox
+                [checked]="item.ind_selecionado"
+                (ionChange)="selecaoEmpresa($event, item)"
+                class="custom-checkbox"
+                (click)="$event.stopPropagation()"
+                [aria-label]="'Selecionar empresa ' + item.nom_empresa"
+              >
+              </ion-checkbox>
+              <span class="checkbox-label" *ngIf="item.ind_selecionado"
+                >Ativa</span
+              >
+            </div>
+          </div>
+
+          <!-- Estado Vazio -->
+          <div
+            class="empty-search-state"
+            *ngIf="empresasFiltradas.length === 0"
+          >
+            <ion-icon name="search-outline"></ion-icon>
+            <p>Nenhuma empresa encontrada</p>
+            <span>Tente buscar com outros termos</span>
+          </div>
+        </div>
+      </ion-content>
+
+      <ion-footer class="modal-footer-modern">
+        <div class="footer-actions-grid">
+          <ion-button
+            class="action-btn-modern select-all"
+            fill="outline"
+            (click)="marcarTodosItens()"
+            size="small"
+          >
+            <ion-icon slot="start" name="checkmark-done"></ion-icon>
+            Todas
+          </ion-button>
+          <ion-button
+            class="action-btn-modern clear-all"
+            fill="outline"
+            color="danger"
+            (click)="desmarcarTodosItens()"
+            size="small"
+          >
+            <ion-icon slot="start" name="close-circle"></ion-icon>
+            Nenhuma
+          </ion-button>
+          <ion-button
+            class="action-btn-modern close-btn"
+            fill="outline"
+            color="medium"
+            (click)="cancel()"
+            size="small"
+          >
+            <ion-icon slot="start" name="exit-outline"></ion-icon>
+            Fechar
+          </ion-button>
+        </div>
+
+        <ion-button
+          expand="block"
+          color="success"
+          class="confirm-btn-modern"
+          (click)="confirm()"
+          [disabled]="auth.userLogado.cod_empresa_usuario?.length === 0"
+        >
+          <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+          <span>Confirmar Seleção</span>
+          <ion-badge
+            *ngIf="auth.userLogado.cod_empresa_usuario?.length > 0"
+            color="light"
+          >
+            {{auth.userLogado.cod_empresa_usuario.length}}
+          </ion-badge>
+        </ion-button>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal de Usuários (Admin) -->
+  <ion-modal [isOpen]="isModalOpenUser" mode="ios" class="users-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar class="modal-toolbar">
+          <ion-title>Gerenciar Usuários</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <!-- Formulário Novo Usuário -->
+        <div class="section-card">
+          <div class="section-header">
+            <ion-icon name="person-add-outline"></ion-icon>
+            <h2>Novo Usuário</h2>
+          </div>
+
+          <ion-item lines="none" class="input-item">
+            <ion-label position="stacked">Nome de Usuário</ion-label>
+            <ion-input
+              [(ngModel)]="novoUsuario.nom_usuario"
+              placeholder="Digite o nome do usuário"
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item lines="none" class="input-item">
+            <ion-label position="stacked"
+              >Senha (mínimo 10 caracteres)</ion-label
+            >
+            <ion-input
+              [(ngModel)]="novoUsuario.senha"
+              placeholder="Digite a senha"
+              type="password"
+              minlength="10"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item lines="none" class="toggle-item">
+            <ion-label>Aprovação de Negociação</ion-label>
+            <ion-toggle
+              [(ngModel)]="novoUsuario.ind_aprova_negociacao_bool"
+              (ionChange)="setAprovaNegociacao($event)"
+            ></ion-toggle>
+          </ion-item>
+
+          <ion-button
+            expand="block"
+            class="primary-button"
+            (click)="insertUser()"
+            [disabled]="!novoUsuario.nom_usuario || !novoUsuario.senha || novoUsuario.senha.length < 10"
+          >
+            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+            Criar Usuário
+          </ion-button>
+        </div>
+
+        <!-- Lista de Usuários -->
+        <div class="section-card">
+          <div class="section-header">
+            <ion-icon name="people-outline"></ion-icon>
+            <h2>Usuários Cadastrados</h2>
+          </div>
+
+          <div
+            *ngIf="listaDeUsuarios && listaDeUsuarios.length > 0"
+            class="users-list"
+          >
+            <ion-card *ngFor="let user of listaDeUsuarios" class="user-card">
+              <ion-card-content>
+                <div class="user-info">
+                  <div class="user-details">
+                    <div class="user-name">
+                      <ion-icon name="person-circle-outline"></ion-icon>
+                      <strong>{{ user.nom_usuario }}</strong>
+                    </div>
+                    <div
+                      class="user-permission"
+                      *ngIf="user.ind_aprova_negociacao === 'S'"
+                    >
+                      <ion-icon
+                        name="checkmark-circle"
+                        color="success"
+                      ></ion-icon>
+                      <span>Aprovador</span>
+                    </div>
+                  </div>
+                  <ion-button
+                    fill="clear"
+                    color="danger"
+                    size="small"
+                    (click)="removeUser(user)"
+                  >
+                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+
+          <div
+            *ngIf="!listaDeUsuarios || listaDeUsuarios.length === 0"
+            class="empty-state"
+          >
+            <ion-icon name="people-outline"></ion-icon>
+            <p>Nenhum usuário cadastrado</p>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

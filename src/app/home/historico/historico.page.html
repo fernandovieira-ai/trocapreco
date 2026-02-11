@@ -1,0 +1,157 @@
+<ion-content
+  [fullscreen]="true"
+  mode="ios"
+  [ngClass]="{'conteudo': !auth.isMobile}"
+  class="historico-content"
+>
+  <div class="page-wrapper">
+    <div class="centered-page">
+      <!-- Toolbar -->
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+          <div class="page-title">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>Meu Histórico</span>
+          </div>
+        </ion-title>
+      </ion-toolbar>
+
+      <!-- Header Info -->
+      <div class="page-header" *ngIf="minhasNegociacoes.length > 0">
+        <div class="header-content">
+          <h2>Histórico de Negociações</h2>
+          <p>Acompanhe suas alterações de preços</p>
+        </div>
+        <ion-badge color="primary" class="count-badge">
+          {{minhasNegociacoes.length}}
+        </ion-badge>
+      </div>
+
+      <!-- Lista de Histórico -->
+      <div class="history-list" *ngIf="minhasNegociacoes.length > 0">
+        <div
+          *ngFor="let item of minhasNegociacoes"
+          class="history-card"
+          [class.approved]="item.ind_excluido === 'N' && item.ind_status === 'T'"
+          [class.rejected]="item.ind_excluido === 'S' && item.ind_status === 'X'"
+          [class.pending]="item.ind_excluido === 'N' && item.ind_status === 'X'"
+          [class.deleted]="item.ind_excluido === 'S' && item.ind_status !== 'X'"
+          (click)="goToHistoricoDetalhe(item.seq_lote_alteracao, item.cod_empresa, item.ind_excluido)"
+        >
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="company-info">
+              <div class="company-avatar">
+                <ion-icon name="business"></ion-icon>
+              </div>
+              <div class="company-details">
+                <h3>{{item.nom_fantasia}}</h3>
+                <p class="lote-info">
+                  <ion-icon name="layers-outline"></ion-icon>
+                  Lote {{item.des_observacao}}
+                </p>
+              </div>
+            </div>
+            <div class="date-badge">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{item.dta_inclusao | date: 'dd/MM/yyyy'}}</span>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="card-content">
+            <!-- Status e Info -->
+            <div class="status-section">
+              <div class="records-info">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <span>{{item.total_registros}} registros processados</span>
+              </div>
+
+              <!-- Aprovado: ind_excluido = 'N' E ind_status = 'T' -->
+              <ion-badge
+                *ngIf="item.ind_excluido === 'N' && item.ind_status === 'T'"
+                color="success"
+                class="status-badge"
+              >
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Aprovado
+              </ion-badge>
+
+              <!-- Reprovado: ind_excluido = 'S' E ind_status = 'X' -->
+              <ion-badge
+                *ngIf="item.ind_excluido === 'S' && item.ind_status === 'X'"
+                color="danger"
+                class="status-badge"
+              >
+                <ion-icon name="close-circle"></ion-icon>
+                Reprovado
+              </ion-badge>
+
+              <!-- Pendente: ind_excluido = 'N' E ind_status = 'X' -->
+              <ion-badge
+                *ngIf="item.ind_excluido === 'N' && item.ind_status === 'X'"
+                color="warning"
+                class="status-badge"
+              >
+                <ion-icon name="time-outline"></ion-icon>
+                Pendente
+              </ion-badge>
+
+              <!-- Excluída: ind_excluido = 'S' E ind_status != 'X' -->
+              <ion-badge
+                *ngIf="item.ind_excluido === 'S' && item.ind_status !== 'X'"
+                color="medium"
+                class="status-badge"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+                Excluída
+              </ion-badge>
+            </div>
+
+            <!-- Progress Bar (apenas para pendentes) -->
+            <div class="progress-container" *ngIf="item.ind_excluido === 'N' && item.ind_status === 'X'">
+              <div class="progress-info">
+                <span class="progress-text">Progresso</span>
+                <span class="progress-value"
+                  >{{item.progresso}}/{{item.total}}</span
+                >
+              </div>
+              <ion-progress-bar
+                [value]="item.progresso / item.total"
+                [color]="item.progresso === item.total ? 'success' : 'primary'"
+              ></ion-progress-bar>
+            </div>
+
+            <!-- Error Message -->
+            <div
+              class="error-message"
+              *ngIf="item.error && item.progresso === item.total"
+            >
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>{{item.error}}</span>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="card-footer">
+            <span class="view-details">Ver detalhes</span>
+            <ion-icon
+              name="chevron-forward-outline"
+              class="arrow-icon"
+            ></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="minhasNegociacoes.length === 0">
+        <ion-icon name="file-tray-outline" color="medium"></ion-icon>
+        <h3>Nenhum Registro Encontrado</h3>
+        <p>Você ainda não possui histórico de negociações</p>
+      </div>
+    </div>
+  </div>
+</ion-content>

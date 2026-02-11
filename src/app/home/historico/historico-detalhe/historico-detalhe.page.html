@@ -1,0 +1,137 @@
+<ion-content
+  [fullscreen]="true"
+  mode="ios"
+  [ngClass]="{'conteudo': !auth.isMobile}"
+  class="details-content"
+>
+  <div class="content-wrapper">
+    <ion-toolbar color="primary" class="fixed-toolbar">
+      <ion-buttons slot="start">
+        <ion-back-button
+          defaultHref="/home/aprovacao-negociacao"
+          text="Voltar"
+        ></ion-back-button>
+      </ion-buttons>
+      <ion-title>
+        <div class="page-title">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <span>Detalhes do Registro</span>
+        </div>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="voltar()" fill="clear">
+          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <!-- Header Info Compacto -->
+    <div class="page-header-compact">
+      <div class="header-info">
+        <h3>Registros da Negociação</h3>
+        <ion-badge color="primary">{{detalhesNegociacao.length}}</ion-badge>
+      </div>
+    </div>
+
+    <!-- Lista de Detalhes com Virtual Scroll Otimizado -->
+    <cdk-virtual-scroll-viewport
+      itemSize="140"
+      minBufferPx="600"
+      maxBufferPx="900"
+      class="details-viewport"
+    >
+      <div
+        *cdkVirtualFor="let item of detalhesNegociacao"
+        class="detail-card-compact"
+      >
+        <!-- Header Compacto -->
+        <div class="card-header-compact">
+          <div class="customer-info-compact">
+            <ion-icon name="person-circle" color="primary"></ion-icon>
+            <div class="customer-text">
+              <h4>{{item.nom_pessoa}}</h4>
+              <span class="item-tag">
+                <ion-icon name="flash"></ion-icon>
+                {{item.des_item}}
+              </span>
+            </div>
+          </div>
+          <ion-badge
+            [color]="item.ind_tipo_negociacao === 'P' ? 'primary' : item.ind_tipo_negociacao === 'A' ? 'success' : 'warning'"
+            class="type-badge-compact"
+          >
+            {{item.ind_tipo_negociacao === 'P' ? 'Fixo' :
+            item.ind_tipo_negociacao === 'A' ? 'Acrés.' : 'Desc.'}}
+          </ion-badge>
+        </div>
+
+        <!-- Content Compacto em Grid 2x2 -->
+        <div class="card-content-compact">
+          <div class="price-grid-2x2">
+            <!-- Preço Atual -->
+            <div class="price-box current">
+              <span class="price-label">
+                <ion-icon name="pricetag-outline"></ion-icon>
+                Preço Atual
+              </span>
+              <span class="price-value">R$ {{item.val_preco_venda | number:'1.2-2'}}</span>
+            </div>
+
+            <!-- Novo Preço -->
+            <div class="price-box new" [class.invalid]="item.valor_calculado < item.val_custo_medio">
+              <span class="price-label">
+                <ion-icon [name]="item.valor_calculado >= item.val_custo_medio ? 'checkmark-circle-outline' : 'close-circle-outline'"></ion-icon>
+                Novo Preço
+              </span>
+              <span class="price-value">R$ {{item.valor_calculado | number:'1.2-2'}}</span>
+              <span class="price-change" [class.positive]="(item.valor_calculado - item.val_preco_venda) > 0" [class.negative]="(item.valor_calculado - item.val_preco_venda) < 0">
+                {{(item.valor_calculado - item.val_preco_venda) > 0 ? '+' : ''}}R$ {{(item.valor_calculado - item.val_preco_venda) | number:'1.2-2'}}
+              </span>
+            </div>
+
+            <!-- Custo -->
+            <div class="price-box cost">
+              <span class="price-label">
+                <ion-icon name="cash-outline"></ion-icon>
+                Custo
+              </span>
+              <span class="price-value">R$ {{item.val_custo_medio | number:'1.2-2'}}</span>
+            </div>
+
+            <!-- Margem -->
+            <div class="price-box margin" [class.low-margin]="item.margem < 10" [class.negative-margin]="item.margem < 0">
+              <span class="price-label">
+                <ion-icon name="trending-up-outline"></ion-icon>
+                Margem
+              </span>
+              <span class="price-value">R$ {{item.margem_valor | number:'1.2-2'}}</span>
+              <span class="margin-percentage">{{item.margem | number:'1.1-1'}}%</span>
+              <span class="margin-indicator" *ngIf="item.margem < 0">⚠️</span>
+            </div>
+          </div>
+
+          <!-- Info adicional -->
+          <div class="additional-info">
+            <div class="info-item">
+              <ion-icon name="card-outline" color="medium"></ion-icon>
+              <span>{{item.des_forma_pagto}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+    <!-- Empty State -->
+    <div class="empty-state-compact" *ngIf="detalhesNegociacao.length === 0">
+      <ion-icon name="document-text-outline" color="medium"></ion-icon>
+      <h4>Nenhum registro encontrado</h4>
+      <p>Não há detalhes disponíveis</p>
+    </div>
+
+    <!-- Botão Voltar Flutuante -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="voltar()" color="primary" size="small">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </div>
+</ion-content>

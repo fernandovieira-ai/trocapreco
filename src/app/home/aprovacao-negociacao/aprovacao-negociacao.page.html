@@ -1,0 +1,186 @@
+<ion-content
+  [fullscreen]="true"
+  mode="ios"
+  [ngClass]="{'conteudo': !auth.isMobile}"
+  class="approval-content"
+>
+  <div class="page-wrapper">
+    <!-- Container centralizado -->
+    <div class="centered-page">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+        </ion-buttons>
+
+        <ion-title>
+          <div class="page-title">
+            <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+            <span>Aprovação de Negociações</span>
+          </div>
+        </ion-title>
+
+        <ion-buttons slot="end">
+          <ion-button fill="clear" (click)="buscaNegociacoesEmpresa()">
+            <ion-icon name="refresh-outline" color="primary"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+
+      <!-- Header Info -->
+      <div class="page-header">
+        <div class="header-content">
+          <h2>Negociações Pendentes</h2>
+          <p>Revise e aprove as regras antes de enviar ao sistema</p>
+        </div>
+        <ion-badge
+          *ngIf="negociacoesEmpresa.length > 0"
+          color="primary"
+          class="count-badge"
+        >
+          {{negociacoesEmpresa.length}}
+        </ion-badge>
+      </div>
+
+      <!-- Lista de Negociações -->
+      <div class="negotiations-list" *ngIf="negociacoesEmpresa.length > 0">
+        <div
+          *ngFor="let item of negociacoesEmpresa"
+          class="negotiation-card"
+          [class.processing]="item.progresso < item.total && item.ind_excluido === 'N'"
+          [class.completed]="item.progresso === item.total && item.ind_excluido === 'N'"
+        >
+          <!-- Card Header -->
+          <div
+            class="card-header"
+            (click)="goToHistoricoDetalhe(item.seq_lote_alteracao, item.cod_empresa, item.ind_excluido)"
+          >
+            <div class="company-info">
+              <div class="company-avatar">
+                <ion-icon name="business"></ion-icon>
+              </div>
+              <div class="company-details">
+                <h3>{{item.nom_fantasia}}</h3>
+                <p class="lote-info">
+                  <ion-icon name="layers-outline"></ion-icon>
+                  Lote {{item.des_observacao}}
+                </p>
+              </div>
+            </div>
+            <ion-icon
+              name="chevron-forward-outline"
+              class="arrow-icon"
+            ></ion-icon>
+          </div>
+
+          <!-- Card Content -->
+          <div class="card-content">
+            <!-- Status e Progresso -->
+            <div class="status-section">
+              <div class="status-info">
+                <div class="status-badge-container">
+                  <ion-badge
+                    *ngIf="item.progresso === item.total && item.ind_excluido === 'N'"
+                    color="success"
+                    class="status-badge"
+                  >
+                    <ion-icon name="checkmark-circle"></ion-icon>
+                    Concluído
+                  </ion-badge>
+                  <ion-badge
+                    *ngIf="item.progresso < item.total && item.ind_excluido === 'N'"
+                    color="warning"
+                    class="status-badge"
+                  >
+                    <ion-icon name="hourglass"></ion-icon>
+                    Em Processamento
+                  </ion-badge>
+                </div>
+                <div class="records-count">
+                  <ion-icon name="document-text-outline"></ion-icon>
+                  <span>{{item.total_registros}} registros</span>
+                </div>
+              </div>
+
+              <!-- Barra de Progresso -->
+              <div class="progress-container">
+                <div class="progress-header">
+                  <span class="progress-label">Progresso</span>
+                  <span class="progress-value"
+                    >{{item.progresso}}/{{item.total}}</span
+                  >
+                </div>
+                <ion-progress-bar
+                  mode="ios"
+                  type="determinate"
+                  [value]="item.progresso / item.total"
+                  [color]="item.progresso === item.total ? 'success' : 'primary'"
+                  class="custom-progress"
+                ></ion-progress-bar>
+              </div>
+            </div>
+
+            <!-- Mensagem de Erro/Sucesso -->
+            <div
+              class="message-container"
+              *ngIf="item.error && item.progresso === item.total && item.ind_excluido === 'N'"
+            >
+              <ion-icon name="information-circle" color="success"></ion-icon>
+              <span>{{item.error}}</span>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="card-footer">
+            <div class="footer-info">
+              <ion-chip color="medium" outline>
+                <ion-icon name="calendar-outline"></ion-icon>
+                <ion-label
+                  >{{item.dta_inclusao | date: 'dd/MM/yyyy'}}</ion-label
+                >
+              </ion-chip>
+            </div>
+            <div class="footer-actions">
+              <ion-button
+                fill="outline"
+                color="danger"
+                class="reject-button"
+                (click)="reprovarRegra(item.seq_lote_alteracao, item)"
+                [disabled]="item.progresso < item.total"
+              >
+                <ion-icon name="close-circle" slot="start"></ion-icon>
+                Reprovar
+              </ion-button>
+              <ion-button
+                expand="block"
+                color="success"
+                class="approve-button"
+                (click)="aprovarRegra(item.seq_lote_alteracao, item)"
+                [disabled]="item.progresso < item.total"
+              >
+                <ion-icon name="checkmark-done" slot="start"></ion-icon>
+                Aprovar
+              </ion-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado vazio -->
+      <div class="empty-state" *ngIf="negociacoesEmpresa.length === 0">
+        <div class="empty-icon">
+          <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+        </div>
+        <h3>Nenhuma negociação pendente</h3>
+        <p>Todas as negociações foram processadas</p>
+        <ion-button
+          fill="outline"
+          color="primary"
+          (click)="buscaNegociacoesEmpresa()"
+        >
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          Atualizar
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

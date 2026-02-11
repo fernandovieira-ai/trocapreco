@@ -1,0 +1,70 @@
+<ion-header [translucent]="true" mode="ios">
+  <ion-toolbar>
+    <ion-title>Preços por Intervalo</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button  defaultHref="/home" text="Voltar"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" mode="ios" [ngClass]="{'conteudo': !auth.isMobile}">
+  <ion-header [collapse]="auth.isMobile ? 'condense': '' ">
+    <ion-toolbar>
+      <ion-title size="large">Preços por Intervalo</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card >
+    <ion-card-content >
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-list inset="true">
+              <ion-item color="light">
+                <ion-input type="number" (ionInput)="precoInicial = +$event.detail.value" label="De" placeholder="Ex: 5.00"></ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+          <ion-col>
+            <ion-list inset="true" >
+              <ion-item color="light">
+                <ion-input type="number" (ionInput)="precoFinal = +$event.detail.value" label="Até" placeholder="Ex: 6.00"></ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-list inset="true">
+        <ion-button (click)="buscaPrecoIntervalo()" [disabled]="precoFinal <= 0 || precoInicial <= 0" expand="block">Pesquisar Preços</ion-button>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <div *ngIf="listaDePrecos.length > 0">
+    <ion-list-header>Encontradas {{listaDePrecos.length}} negociações</ion-list-header>
+    <ion-card>
+      <ion-card-header>Reajuste de Preços</ion-card-header>
+      <ion-card-content >
+        <ion-list inset="true">
+          <ion-item color="light">
+            <ion-select (ionChange)="tipoRegra = $event.detail.value"
+              label="Tipo de Regra"
+              [interfaceOptions]="customActionSheetOptions"
+              interface="action-sheet"
+              placeholder="Selecione"
+            >
+              <ion-select-option value="A">Adicionar Valor</ion-select-option>
+              <ion-select-option value="S">Subtrair Valor</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+        <ion-list inset="true">
+          <ion-item color="light">
+            <ion-input (ionInput)="valorRegra = +$event.detail.value" type="number" label="Valor" placeholder="Ex 0.10"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-list inset="true">
+          <ion-button (click)="aplicaRegra()" [disabled]="tipoRegra === '' || valorRegra <= 0" expand="block">Enviar</ion-button>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

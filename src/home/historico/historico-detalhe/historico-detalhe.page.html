@@ -1,0 +1,56 @@
+<ion-header [translucent]="true" mode="ios" class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Detalhes do Registro</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <!-- <ion-toolbar class="ion-no-border" color="transparent" >
+    <ion-grid >
+      <ion-row style="text-align: center;">
+        <ion-col>
+          <ion-chip color="success" (click)="aprovarRegra()" [disabled]="auth.userLogado.ind_aprova_negociacao === 'N'">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <ion-label>Aprovar Regras</ion-label>
+          </ion-chip>
+        </ion-col>
+        <ion-col>
+          <ion-chip color="danger" [disabled]="ind_excluido === 'S'" (click)="excluirRegra()" [disabled]="auth.userLogado.ind_aprova_negociacao === 'N'">
+            <ion-icon name="close-circle-outline"></ion-icon>
+            <ion-label>Reprovar Regras</ion-label>
+          </ion-chip>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar> -->
+</ion-header>
+
+<ion-content [fullscreen]="false" mode="ios" [ngClass]="{'conteudo': !auth.isMobile}">
+  <cdk-virtual-scroll-viewport itemSize="56" minBufferPx="900" maxBufferPx="1350">
+    <ion-list inset="true" *cdkVirtualFor="let item of this.detalhesNegociacao">
+      <ion-item color="light">
+        <ion-label>
+          <h3>{{item.nom_pessoa}}</h3>
+          <p *ngIf="item.ind_tipo_negociacao === 'P'">Preço Fixo - <b
+              style="color: lightcoral;">{{item.des_item.toUpperCase()}}</b></p>
+          <p *ngIf="item.ind_tipo_negociacao === 'A'">Acréscimo - <b
+              style="color: lightcoral;">{{item.des_item.toUpperCase()}}</b></p>
+          <p *ngIf="item.ind_tipo_negociacao === 'D'">Desconto - <b
+              style="color: lightcoral;">{{item.des_item.toUpperCase()}}</b></p>
+          <p *ngIf="item.ind_percentual_valor === 'P'">Percentual <b style="color: lightgreen;">{{item.val_preco_venda_a
+              || item.val_preco_venda_b | number : '1.2-2'}}%</b> - {{item.des_forma_pagto.toUpperCase()}}</p>
+          <p *ngIf="item.ind_percentual_valor === 'V'">Valor <b style="color: lightgreen;">R${{item.val_preco_venda_a ||
+              item.val_preco_venda_b | number : '1.2-2'}}</b> - {{item.des_forma_pagto.toUpperCase()}} </p>
+          <p>Custo Produto <b style="color: lightcoral;">R$ {{item.val_custo_medio | number : '1.2-2'}}</b> </p>
+        </ion-label>
+      </ion-item>
+      <ion-item color="light">
+        <ion-chip *ngIf="item.ind_tipo_negociacao === 'P'"> <strong>Margem R$ {{item.val_preco_venda_a -
+            item.val_custo_medio | number : '1.2-2'}}</strong></ion-chip>
+        <ion-chip *ngIf="item.ind_tipo_negociacao !== 'P'" color="warning">Margem R$
+          {{item.ind_tipo_negociacao === 'A' ? ((item.val_custo_medio + item.val_preco_venda ) | number : '1.2-2') :
+          ((item.val_preco_venda - item.val_custo_medio) | number : '1.2-2')}}</ion-chip>
+      </ion-item>
+    </ion-list>
+  </cdk-virtual-scroll-viewport>
+</ion-content>

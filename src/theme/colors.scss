@@ -1,0 +1,102 @@
+// Cores principais inspiradas no padrão AppPedidoExpo
+// Paleta de cores primária - Roxo escuro
+$primary: #24024b;
+$secondary: #4a0e78;
+$white: #ffffff;
+$text: #1f2937;
+$dark-gray: #374151;
+$medium-gray: #9ca3af;
+$light-gray: #f3f4f6;
+
+// Gradiente principal (fundo)
+$gradient-start: #24024b;
+$gradient-end: #4a0e78;
+
+// Cores do card
+$card-background: rgba(255, 255, 255, 0.95);
+$card-border: rgba(255, 255, 255, 0.3);
+$card-shadow: rgba(0, 0, 0, 0.1);
+
+// Textos
+$text-primary: #1a1a2e;
+$text-secondary: #6b7280;
+$text-label: #374151;
+$text-white: #ffffff;
+
+// Inputs
+$input-background: #f9fafb;
+$input-border: #e5e7eb;
+$input-border-hover: #d1d5db;
+$input-border-focus: #24024b;
+$input-text: #1f2937;
+
+// Botões
+$button-gradient-start: #24024b;
+$button-gradient-end: #4a0e78;
+$button-text: #ffffff;
+$button-disabled: #9ca3af;
+
+// Mensagens e alertas
+$error-background: #fee2e2;
+$error-border: #fca5a5;
+$error-text: #dc2626;
+$success-background: #d1fae5;
+$success-border: #6ee7b7;
+$success-text: #059669;
+$warning-background: #fef3c7;
+$warning-border: #fcd34d;
+$warning-text: #d97706;
+$info-background: #dbeafe;
+$info-border: #93c5fd;
+$info-text: #2563eb;
+
+// Links
+$link: #24024b;
+$link-hover: #4a0e78;
+
+// Estados
+$error: #dc2626;
+$success: #059669;
+$warning: #d97706;
+$info: #2563eb;
+
+// Bordas e divisores
+$border-color: #e5e7eb;
+$divider-color: #d1d5db;
+
+// Sombras
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+// Espaçamentos (8px base)
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+
+// Border radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-full: 9999px;
+
+// Tamanhos de fonte
+$font-xs: 12px;
+$font-sm: 14px;
+$font-md: 16px;
+$font-lg: 18px;
+$font-xl: 20px;
+$font-2xl: 24px;
+$font-3xl: 30px;
+
+// Peso de fonte
+$font-light: 300;
+$font-regular: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;

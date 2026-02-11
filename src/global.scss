@@ -1,0 +1,1118 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* Paletas dark removidas - usar tema customizado no variables.scss */
+
+// ===============================
+// IMPORTAR TEMA CUSTOMIZADO
+// ===============================
+@import "./theme/colors.scss";
+@import "./theme/variables.scss";
+
+// ===============================
+// ESTILOS GLOBAIS PERSONALIZADOS
+// ===============================
+
+// Reset e configurações base
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #24024b;
+  margin: 0;
+  padding: 0;
+}
+
+// Garantir que ion-app tenha fundo
+ion-app {
+  background: #24024b;
+}
+
+// Background padrão - cor sólida (gradientes são aplicados por página)
+ion-content {
+  --background: transparent;
+}
+
+// Toast personalizado com alta visibilidade
+ion-toast {
+  --background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  --color: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --border-width: 2px;
+  --border-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px;
+
+  &::part(message) {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+  }
+
+  &::part(button) {
+    color: #3498db;
+    font-weight: 600;
+
+    &:hover {
+      color: #5dade2;
+    }
+  }
+
+  &::part(container) {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+// Toasts com cores específicas por tipo
+.custom-toast {
+  &.toast-success {
+    --background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    --border-color: rgba(255, 255, 255, 0.3);
+    --box-shadow: 0 8px 24px rgba(39, 174, 96, 0.4);
+  }
+
+  &.toast-error {
+    --background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    --border-color: rgba(255, 255, 255, 0.3);
+    --box-shadow: 0 8px 24px rgba(231, 76, 60, 0.4);
+  }
+
+  &.toast-warning {
+    --background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+    --border-color: rgba(255, 255, 255, 0.3);
+    --box-shadow: 0 8px 24px rgba(243, 156, 18, 0.4);
+  }
+
+  &.toast-info {
+    --background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    --border-color: rgba(255, 255, 255, 0.3);
+    --box-shadow: 0 8px 24px rgba(52, 152, 219, 0.4);
+  }
+}
+// ===============================
+.standard-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  margin-bottom: 16px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .card-icon {
+    font-size: 32px;
+    color: #24024b;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+}
+
+// ===============================
+// BOTÕES CUSTOMIZADOS
+// ===============================
+.gradient-button {
+  --background: linear-gradient(135deg, #24024b 0%, #4a0e78 100%);
+  --background-hover: linear-gradient(135deg, #4a0e78 0%, #24024b 100%);
+  --background-activated: #24024b;
+  --color: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: none;
+}
+
+.outline-button {
+  --border-color: #24024b;
+  --color: #24024b;
+  --border-radius: 12px;
+  --border-width: 2px;
+  font-weight: 500;
+
+  &:hover {
+    --background: rgba(36, 2, 75, 0.05);
+  }
+}
+
+// ===============================
+// INPUTS CUSTOMIZADOS
+// ===============================
+.custom-input-wrapper {
+  margin-bottom: 16px;
+
+  .input-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  ion-input,
+  ion-select,
+  ion-textarea {
+    --background: #f9fafb;
+    --border-color: #e5e7eb;
+    --border-radius: 8px;
+    --border-width: 2px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+
+    &:focus-within {
+      --border-color: #24024b;
+      --background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(36, 2, 75, 0.1);
+    }
+  }
+}
+
+// ===============================
+// MODAIS
+// ===============================
+.custom-modal {
+  --border-radius: 20px;
+  --height: auto;
+  --max-height: 90%;
+
+  .modal-header {
+    background: linear-gradient(135deg, #24024b 0%, #4a0e78 100%);
+    color: #ffffff;
+    padding: 20px;
+
+    ion-title {
+      font-weight: 600;
+    }
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  .modal-footer {
+    padding: 16px;
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+// ===============================
+// LISTAS CUSTOMIZADAS
+// ===============================
+.custom-list-item {
+  --background: rgba(255, 255, 255, 0.95);
+  --border-radius: 12px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    --background: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// ===============================
+// BADGES E CHIPS
+// ===============================
+ion-badge {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+ion-chip {
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+// ===============================
+// LOADING E SPINNERS
+// ===============================
+.custom-loading {
+  --backdrop-opacity: 0.7;
+  --background: rgba(255, 255, 255, 0.95);
+  --spinner-color: #24024b;
+  border-radius: 16px;
+
+  .loading-content {
+    color: #1a1a2e;
+    font-weight: 500;
+  }
+}
+
+// ===============================
+// SCROLLBAR CUSTOMIZADO
+// ===============================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
+
+// ===============================
+// UTILITÁRIOS
+// ===============================
+.text-gradient {
+  background: linear-gradient(135deg, #24024b 0%, #4a0e78 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+ion-content {
+  --background: linear-gradient(180deg, #121212 0%, #1a1a1a 100%);
+}
+// global.scss - APENAS ESTA REGRA PARA .conteudo
+
+// global.scss - CORREÇÃO PARA FOOTER
+
+/* ============================================
+   ESTILO GLOBAL SIMPLES PARA MODO DESKTOP
+   ============================================ */
+
+// Apenas garante que o content seja flex para centralização
+ion-content.conteudo {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  --background: linear-gradient(145deg, #121212 0%, #1a1a1a 50%, #222222 100%);
+  min-height: 100vh !important;
+
+  // IMPORTANTE: Remove flex do scroll interno
+  .inner-scroll {
+    display: block !important;
+    width: 100% !important;
+  }
+}
+
+/* ============================================
+   CLASSE UTILITÁRIA PARA CONTAINER CENTRALIZADO
+   ============================================ */
+
+// Esta classe deve ser usada DENTRO do ion-content
+.centered-page {
+  width: 100% !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  padding: 1rem !important;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem !important;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 2rem !important;
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px !important;
+    margin: 1rem auto !important;
+    min-height: auto !important; // REMOVE calc(100vh - 2rem)
+  }
+}
+
+.alert-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+// Para ícones Ionic
+ion-icon.alert-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #3498db;
+}
+
+// Alerta profissional
+.custom-alert-professional {
+  --backdrop-opacity: 0.8;
+  //  --background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  --border-radius: 16px;
+  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  .alert-wrapper {
+    //border: 1px solid rgba(0, 0, 0, 0.05);
+    max-width: 90%;
+    width: 350px;
+  }
+
+  .alert-head {
+    text-align: center;
+    padding: 20px 20px 10px;
+
+    .alert-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #8dc0f3;
+      margin-bottom: 5px;
+    }
+
+    .alert-sub-title {
+      font-size: 14px;
+      color: #7f8c8d;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+  }
+
+  .alert-message {
+    text-align: center;
+    font-size: 14px;
+    //color: #5a6c7d;
+    line-height: 1.5;
+    padding: 0 20px 20px;
+    max-height: 200px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      //background: #f1f1f1;
+      //border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      // background: #c1c1c1;
+      //border-radius: 10px;
+    }
+  }
+
+  .alert-button-group {
+    padding: 0 20px 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+
+    button {
+      margin: 0;
+      flex: 1;
+      min-height: 48px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 15px;
+      text-transform: none;
+      letter-spacing: 0.3px;
+      transition: all 0.2s ease;
+
+      &.alert-button-cancel {
+        //--background: #f8f9fa;
+        --color: #ffcdcd;
+        --background-hover: #ffcdcd;
+        --background-activated: #ffcdcd;
+        border: 0px solid #ffcdcd;
+
+        &:hover,
+        &:active {
+          background: #ffcdcd;
+        }
+      }
+
+      &.alert-button-confirm {
+        --background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        --color: white;
+        --background-hover: #2573a7;
+        --background-activated: #2573a7;
+        border: none;
+
+        &:hover,
+        &:active {
+          background: #2573a7;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Versão com ícone
+.custom-alert-professional.with-icon {
+  .alert-head {
+    padding-top: 30px;
+
+    &::before {
+      content: "🔄";
+      font-size: 40px;
+      display: block;
+      margin-bottom: 15px;
+    }
+  }
+}
+
+/* ============================================
+   CORREÇÃO ESPECÍFICA PARA FOOTER NO MODO DESKTOP
+   ============================================ */
+
+// Footer no modo conteudo precisa ter position diferente
+// ion-footer.conteudo {
+//   display: block !important; // Remove qualquer flex herdado
+//   width: 100% !important;
+//   max-width: 800px !important;
+//   margin: 0 auto !important;
+//   background: transparent !important;
+//   border-radius: 10px !important;
+//   margin-top: 15px;
+
+//   @media (min-width: 1024px) {
+//     box-shadow:
+//       0 20px 40px rgba(0, 0, 0, 0.2),
+//       0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+//     border-radius: 0 0 16px 16px !important;
+//     margin: -1rem auto 1rem auto !important; // Ajuste para alinhar com content
+//     position: relative !important;
+//     z-index: 10 !important;
+//   }
+// }
+
+// // Container para footer também precisa de estilos específicos
+// ion-footer .centered-page {
+//   width: 100% !important;
+//   max-width: 100% !important;
+//   margin: 0 !important;
+//   padding: 1rem !important;
+//   border-radius: 10px !important;
+//   margin-top: 15px;
+//   background: rgba(30, 30, 30, 0.95) !important;
+//   backdrop-filter: blur(10px) !important;
+//   border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+
+//   @media (min-width: 1024px) {
+//     padding: 1.5rem !important;
+//     border-radius: 0 0 16px 16px !important;
+//     border-top: none !important;
+//   }
+// }
+
+// global.scss - Correção para telas grandes
+
+/* ============================================
+   ESTILOS GLOBAIS PARA MODO DESKTOP (.conteudo)
+   ============================================ */
+
+// Centralização automática para todas as páginas no modo desktop
+// ion-content.conteudo {
+//   display: flex !important;
+//   flex-direction: column !important;
+//   align-items: center !important;
+//   justify-content: flex-start !important;
+//   width: 100% !important;
+//   max-width: 1400px !important; // Aumentado para 1400px
+//   margin: 0 auto !important;
+//   min-height: 100vh !important;
+//   background: var(--ion-background-color, #121212) !important;
+
+//   // Para telas muito grandes, centraliza com sombra
+//   @media (min-height: 800px) {
+//     margin: 2rem auto !important;
+//     max-height: 90vh !important;
+//     border-radius: 24px !important;
+//     overflow: hidden !important;
+//     box-shadow:
+//       0 25px 50px -12px rgba(0, 0, 0, 0.5),
+//       0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+//   }
+
+//   // Container interno que centraliza o conteúdo
+//   & > *:first-child:not(ion-header):not(ion-footer) {
+//     width: 100% !important;
+//     max-width: 1200px !important; // Aumentado para 1200px
+//     margin: 0 auto !important;
+//     padding: 1rem !important;
+
+//     @media (min-width: 1024px) {
+//       padding: 2rem !important;
+//     }
+//   }
+// }
+
+// // Centraliza headers no modo desktop - CORRIGIDO
+// ion-header.conteudo {
+//   width: 100% !important;
+//   max-width: 1400px !important; // Igual ao content
+//   margin: 0 auto !important;
+//   background: transparent !important;
+
+//   ion-toolbar {
+//     max-width: 1200px !important; // Igual ao container interno
+//     margin: 0 auto !important;
+//     background: transparent !important;
+
+//     ion-title {
+//       text-align: center !important;
+//     }
+//   }
+// }
+
+// // Centraliza footers no modo desktop
+// ion-footer.conteudo {
+//   width: 100% !important;
+//   max-width: 1400px !important;
+//   margin: 0 auto !important;
+//   background: transparent !important;
+
+//   & > * {
+//     max-width: 1200px !important;
+//     margin: 0 auto !important;
+//   }
+// }
+
+// /* ============================================
+//    CORREÇÃO PARA PREENCHER A TELA INTEIRA
+//    ============================================ */
+
+// // Remove qualquer margin/padding extra do body e html
+// html, body {
+//   margin: 0 !important;
+//   padding: 0 !important;
+//   width: 100% !important;
+//   height: 100% !important;
+//   overflow-x: hidden !important;
+// }
+
+// // Garante que o ion-app ocupe toda a tela
+// ion-app {
+//   width: 100% !important;
+//   height: 100% !important;
+//   background: var(--ion-background-color, #121212) !important;
+// }
+
+// // Se houver um container root
+// app-root {
+//   display: block !important;
+//   width: 100% !important;
+//   height: 100% !important;
+//   background: var(--ion-background-color, #121212) !important;
+// }
+
+// /* ============================================
+//    CLASSES UTILITÁRIAS GLOBAIS ATUALIZADAS
+//    ============================================ */
+
+// // Container centralizado maior
+// .centered-container {
+//   width: 100% !important;
+//   max-width: 1200px !important;
+//   margin: 0 auto !important;
+//   padding: 1rem !important;
+
+//   @media (min-width: 1024px) {
+//     padding: 2rem !important;
+//   }
+// }
+
+// // Conteúdo centralizado maior
+// .centered-content {
+//   width: 100% !important;
+//   max-width: 1000px !important; // Aumentado
+//   margin: 0 auto !important;
+// }
+
+// // Layout de grid centralizado maior
+// .centered-grid {
+//   display: grid !important;
+//   grid-template-columns: 1fr !important;
+//   gap: 1.5rem !important;
+//   max-width: 1200px !important; // Aumentado
+//   margin: 0 auto !important;
+//   padding: 1rem !important;
+
+//   @media (min-width: 768px) {
+//     grid-template-columns: repeat(2, 1fr) !important;
+//   }
+
+//   @media (min-width: 1024px) {
+//     grid-template-columns: repeat(3, 1fr) !important;
+//     padding: 2rem !important;
+//   }
+
+//   @media (min-width: 1400px) {
+//     grid-template-columns: repeat(4, 1fr) !important; // Mais colunas para telas grandes
+//   }
+// }
+
+// // Card centralizado maior
+// .centered-card {
+//   background: rgba(30, 30, 30, 0.7) !important;
+//   backdrop-filter: blur(10px) !important;
+//   border-radius: 16px !important;
+//   border: 1px solid rgba(255, 255, 255, 0.08) !important;
+//   padding: 1.5rem !important;
+//   max-width: 1000px !important; // Aumentado
+//   margin: 1rem auto !important;
+
+//   @media (min-width: 1024px) {
+//     padding: 2rem !important;
+//     margin: 2rem auto !important;
+//   }
+// }
+
+// /* ============================================
+//    MEDIA QUERIES GLOBAIS ATUALIZADAS
+//    ============================================ */
+
+// // Pequenos desktops/laptops
+// @media (min-width: 1024px) {
+//   ion-content.conteudo {
+//     max-width: 1200px !important;
+//     display: flex !important;
+
+//     & > *:first-child:not(ion-header):not(ion-footer) {
+//       max-width: 1100px !important;
+//     }
+//   }
+
+//   ion-header.conteudo {
+//     max-width: 1200px !important;
+
+//     ion-toolbar {
+//       max-width: 1100px !important;
+//     }
+//   }
+
+//   .centered-container {
+//     max-width: 1100px !important;
+//   }
+// }
+
+// // Desktops médios
+// @media (min-width: 1280px) {
+//   ion-content.conteudo {
+//     max-width: 1300px !important;
+
+//     & > *:first-child:not(ion-header):not(ion-footer) {
+//       max-width: 1200px !important;
+//     }
+//   }
+
+//   ion-header.conteudo {
+//     max-width: 1300px !important;
+
+//     ion-toolbar {
+//       max-width: 1200px !important;
+//     }
+//   }
+
+//   .centered-container {
+//     max-width: 1200px !important;
+//   }
+// }
+
+// // Desktops grandes (seu caso: 1440px)
+// @media (min-width: 1440px) {
+//   ion-content.conteudo {
+//     max-width: 1400px !important;
+
+//     & > *:first-child:not(ion-header):not(ion-footer) {
+//       max-width: 1300px !important;
+//     }
+//   }
+
+//   ion-header.conteudo {
+//     max-width: 1400px !important;
+
+//     ion-toolbar {
+//       max-width: 1300px !important;
+//     }
+//   }
+
+//   .centered-container {
+//     max-width: 1300px !important;
+//   }
+
+//   // Aumenta grids para telas muito grandes
+//   .centered-grid {
+//     max-width: 1300px !important;
+
+//     @media (min-width: 1440px) {
+//       grid-template-columns: repeat(4, 1fr) !important;
+//     }
+//   }
+// }
+
+// // Desktops muito grandes
+// @media (min-width: 1600px) {
+//   ion-content.conteudo {
+//     max-width: 1500px !important;
+
+//     & > *:first-child:not(ion-header):not(ion-footer) {
+//       max-width: 1400px !important;
+//     }
+//   }
+
+//   ion-header.conteudo {
+//     max-width: 1500px !important;
+
+//     ion-toolbar {
+//       max-width: 1400px !important;
+//     }
+//   }
+
+//   .centered-container {
+//     max-width: 1400px !important;
+//   }
+
+//   .centered-grid {
+//     max-width: 1400px !important;
+
+//     @media (min-width: 1600px) {
+//       grid-template-columns: repeat(5, 1fr) !important;
+//     }
+//   }
+// }
+
+// // 4K e telas enormes
+// @media (min-width: 1920px) {
+//   ion-content.conteudo {
+//     max-width: 1800px !important;
+
+//     & > *:first-child:not(ion-header):not(ion-footer) {
+//       max-width: 1600px !important;
+//     }
+//   }
+
+//   ion-header.conteudo {
+//     max-width: 1800px !important;
+
+//     ion-toolbar {
+//       max-width: 1600px !important;
+//     }
+//   }
+
+//   .centered-container {
+//     max-width: 1600px !important;
+//   }
+// }
+
+// /* ============================================
+//    CORREÇÃO ESPECÍFICA PARA BACKGROUND
+//    ============================================ */
+
+// // Garante que o background ocupe toda a tela mesmo no modo conteudo
+// ion-content.conteudo {
+//   position: relative !important;
+
+//   // Background que preenche os lados quando a tela é maior que o max-width
+//   &::before {
+//     content: '' !important;
+//     position: fixed !important;
+//     top: 0 !important;
+//     left: 0 !important;
+//     right: 0 !important;
+//     bottom: 0 !important;
+//     background: var(--ion-background-color, #121212) !important;
+//     z-index: -1 !important;
+//   }
+
+//   // Container do conteúdo real
+//   .scroll-content,
+//   .inner-scroll {
+//     width: 100% !important;
+//     max-width: inherit !important;
+//     margin: 0 auto !important;
+//     background: transparent !important;
+//     position: relative !important;
+//     z-index: 1 !important;
+//   }
+// }
+
+// /* ============================================
+//    UTILITÁRIOS DE LARGURA COMPLETA
+//    ============================================ */
+
+// // Para forçar largura total mesmo no modo conteudo
+// .full-width {
+//   width: 100vw !important;
+//   max-width: 100vw !important;
+//   margin-left: calc(-50vw + 50%) !important;
+//   margin-right: calc(-50vw + 50%) !important;
+//   position: relative !important;
+//   left: 50% !important;
+//   right: 50% !important;
+// }
+
+// // Para elementos que devem preencher o container
+// .fill-container {
+//   width: 100% !important;
+//   max-width: 100% !important;
+//   margin: 0 !important;
+//   padding: 0 !important;
+// }
+
+// /* ============================================
+//    CORREÇÃO PARA COMPONENTES IÔNICOS
+//    ============================================ */
+
+// // Lists não devem ter limite de largura
+// ion-list.conteudo {
+//   max-width: none !important;
+//   width: 100% !important;
+// }
+
+// // Grids devem ser responsivos
+// ion-grid.conteudo {
+//   max-width: none !important;
+//   width: 100% !important;
+//   padding: 0 1rem !important;
+
+//   @media (min-width: 1024px) {
+//     padding: 0 2rem !important;
+//   }
+// }
+
+// // Cards podem ser um pouco menores
+// ion-card.conteudo {
+//   max-width: 100% !important;
+//   margin: 1rem auto !important;
+
+//   @media (min-width: 768px) {
+//     max-width: 90% !important;
+//   }
+
+//   @media (min-width: 1024px) {
+//     max-width: 800px !important;
+//   }
+// }
+
+/* ============================================
+   CUSTOMIZAÇÃO DO ALERT COM CHECKMARK
+   ============================================ */
+
+// Customização do Alert para Seleção em Massa
+::ng-deep ion-alert.alert-multiple-choice,
+ion-alert.alert-multiple-choice {
+  --max-width: 90% !important;
+  --max-height: 80% !important;
+
+  .alert-wrapper {
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .alert-head {
+    padding: 20px 16px 16px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+
+    .alert-title {
+      color: white !important;
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      text-align: center !important;
+    }
+
+    .alert-sub-title {
+      color: rgba(255, 255, 255, 0.9) !important;
+      font-size: 14px !important;
+      text-align: center !important;
+    }
+  }
+
+  .alert-message {
+    padding: 16px !important;
+    font-size: 15px !important;
+    color: #666 !important;
+    text-align: center !important;
+  }
+
+  .alert-checkbox-group {
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+    padding: 8px 0 !important;
+
+    &::-webkit-scrollbar {
+      width: 8px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1 !important;
+      border-radius: 10px !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #667eea !important;
+      border-radius: 10px !important;
+
+      &:hover {
+        background: #764ba2 !important;
+      }
+    }
+  }
+
+  .alert-checkbox-label {
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: #2c3e50 !important;
+    line-height: 1.5 !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.05) !important;
+    }
+  }
+
+  .alert-checkbox-icon {
+    width: 24px !important;
+    height: 24px !important;
+    border-width: 2px !important;
+    border-color: #667eea !important;
+    border-radius: 6px !important;
+    border-style: solid !important;
+  }
+
+  .alert-checkbox-inner {
+    width: 10px !important;
+    height: 16px !important;
+    border: solid white !important;
+    border-width: 0 3px 3px 0 !important;
+    transform: rotate(45deg) !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    margin-left: 2px !important;
+  }
+
+  [aria-checked="true"] .alert-checkbox-icon {
+    background: #27ae60 !important;
+    border-color: #27ae60 !important;
+  }
+
+  [aria-checked="true"] .alert-checkbox-label {
+    background: rgba(39, 174, 96, 0.08) !important;
+    font-weight: 600 !important;
+  }
+
+  .alert-button-group {
+    padding: 12px 16px 16px !important;
+    border-top: 1px solid #e0e0e0 !important;
+    display: flex !important;
+    gap: 12px !important;
+
+    .alert-button {
+      flex: 1 !important;
+      height: 44px !important;
+      border-radius: 10px !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      text-transform: none !important;
+
+      &.alert-button-role-cancel {
+        background: #f5f5f5 !important;
+        color: #666 !important;
+
+        &:hover {
+          background: #e0e0e0 !important;
+        }
+      }
+
+      &:not(.alert-button-role-cancel) {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+
+        &:hover {
+          opacity: 0.9 !important;
+        }
+      }
+    }
+  }
+}

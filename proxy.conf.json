@@ -1,0 +1,8 @@
+{
+  "/drfPriceSwap": {
+    "target": "https://variedades.digitalrf.com.br",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

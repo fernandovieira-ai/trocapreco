@@ -1,0 +1,36 @@
+{
+  "name": "inventarionline",
+  "version": "1.0.0",
+  "description": "BI-DigitalRF",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon",
+    "lint": "eslint --ext .js, -f ./nodemodules/eslint-friendly-formatter . --fix",
+    "prepush": "npm run lint",
+    "start": "node server.js"
+  },
+  "author": "RenatoFilho",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "husky": "^7.0.4",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "dotenv-safe": "^8.2.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "express": "^4.17.3",
+    "express-promise-router": "^4.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.9.7",
+    "pdfkit": "^0.13.0",
+    "pg": "^8.11.3",
+    "socket.io": "^4.7.2"
+  }
+}

@@ -1,0 +1,265 @@
+<ion-content
+  [fullscreen]="true"
+  mode="ios"
+  class="filters-content"
+  [ngClass]="{'conteudo': !auth.isMobile}"
+>
+  <div class="page-wrapper">
+    <div class="centered-page">
+      <!-- Toolbar -->
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+          <div class="page-title">
+            <ion-icon name="filter-outline"></ion-icon>
+            <span>Itens Atualização</span>
+          </div>
+        </ion-title>
+        <ion-buttons slot="end">
+          <ion-button
+            routerLink="/home/preco-atualizacao"
+            [disabled]="this.movimento.itemSelecionado.length === 0"
+            class="next-button"
+          >
+            Avançar
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+
+      <!-- Header da Página -->
+      <div class="page-header">
+        <div class="header-content">
+          <h2>Selecione os Itens</h2>
+          <p>Escolha os itens para atualização de preços</p>
+        </div>
+        <ion-badge
+          [color]="this.dataLoad.dadosCarregados === false ? 'danger' : 'success'"
+          class="status-badge"
+        >
+          <ion-icon
+            [name]="this.dataLoad.dadosCarregados === true ? 'cloud-done-outline' : 'cloud-offline-outline'"
+          ></ion-icon>
+          <ion-label>{{this.dataLoad.dadosCarregados === true ? 'Completo' : 'Processando'}}</ion-label>
+        </ion-badge>
+      </div>
+
+      <div class="responsive-container">
+        <!-- Filter Type Section -->
+        <div class="filter-type-section">
+          <div class="filter-type-cards">
+            <div
+              class="filter-type-card"
+              [class.active]="filtro === 'C'"
+              (click)="tipoFiltro({detail: {value: 'C'}})"
+            >
+              <div class="card-icon">
+                <ion-icon name="people-outline"></ion-icon>
+              </div>
+              <div class="card-content">
+                <h3>Cliente</h3>
+                <p>Filtrar por cliente</p>
+              </div>
+              <div class="selection-indicator" *ngIf="filtro === 'C'">
+                <ion-icon name="checkmark-circle"></ion-icon>
+              </div>
+            </div>
+
+            <div
+              class="filter-type-card"
+              [class.active]="filtro === 'I'"
+              (click)="tipoFiltro({detail: {value: 'I'}})"
+            >
+              <div class="card-icon">
+                <ion-icon name="cube-outline"></ion-icon>
+              </div>
+              <div class="card-content">
+                <h3>Item</h3>
+                <p>Filtrar por item</p>
+              </div>
+              <div class="selection-indicator" *ngIf="filtro === 'I'">
+                <ion-icon name="checkmark-circle"></ion-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cliente Filter Section -->
+        <div *ngIf="filtro === 'C'" class="filter-section">
+          <div class="search-section">
+            <div class="search-header">
+              <ion-icon name="search-outline" class="search-icon"></ion-icon>
+              <h3>Buscar Clientes</h3>
+            </div>
+            <ion-searchbar
+              class="modern-searchbar"
+              [debounce]="1000"
+              (ionInput)="pesquisaCliente($event)"
+              placeholder="Código, CNPJ ou Descrição"
+              mode="ios"
+            ></ion-searchbar>
+          </div>
+
+          <div class="results-list" *ngIf="dataLoad.filtroPessoa.length > 0">
+            <div
+              *ngFor="let item of dataLoad.filtroPessoa"
+              class="result-card"
+              [class.selected]="item.ind_selecionado"
+            >
+              <div class="result-content">
+                <div class="result-info">
+                  <h4>{{item.nom_pessoa}}</h4>
+                  <p>
+                    <ion-icon name="business-outline"></ion-icon>
+                    Código {{item.cod_pessoa}}
+                  </p>
+                  <p>
+                    <ion-icon name="document-text-outline"></ion-icon>
+                    CNPJ {{item.num_cnpj_cpf}}
+                  </p>
+                </div>
+                <ion-button
+                  *ngIf="!item.ind_selecionado"
+                  fill="clear"
+                  color="success"
+                  (click)="addPessoa(item)"
+                  class="action-button"
+                >
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="dataLoad.filtroPessoa.length === 0">
+            <ion-icon name="search-outline"></ion-icon>
+            <p>Digite para buscar clientes</p>
+          </div>
+        </div>
+
+        <!-- Item Filter Section -->
+        <div *ngIf="filtro === 'I'" class="filter-section">
+          <div class="select-section">
+            <div class="select-header">
+              <ion-icon name="list-outline" class="select-icon"></ion-icon>
+              <h3>Seleção Rápida</h3>
+            </div>
+            <div class="select-card">
+              <ion-item lines="none">
+                <ion-select
+                  (ionChange)="marcarItens($event)"
+                  label="Marcar Itens"
+                  placeholder="Selecione múltiplos itens"
+                  [multiple]="true"
+                  interface="popover"
+                >
+                  <ion-select-option *ngFor="let item of itemfull" [value]="item.cod_item">
+                    {{item.cod_item}} - {{item.des_item}}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </div>
+          </div>
+
+          <div class="items-by-company">
+            <ng-container *ngFor="let empresaGroup of groupedItems">
+              <div class="company-section">
+                <div class="company-header">
+                  <div class="company-icon">
+                    <ion-icon name="business"></ion-icon>
+                  </div>
+                  <div class="company-info">
+                    <h3>{{empresaGroup.nom_fantasia}}</h3>
+                    <p>Código: {{empresaGroup.cod_empresa}}</p>
+                  </div>
+                  <ion-badge color="primary">
+                    {{empresaGroup.items.length}} itens
+                  </ion-badge>
+                </div>
+
+                <div class="items-list">
+                  <div
+                    *ngFor="let item of empresaGroup.items; let i = index"
+                    class="item-card"
+                    [class.selected]="item.ind_selecionado"
+                  >
+                    <div class="item-info">
+                      <div class="item-code">
+                        <ion-icon name="cube-outline"></ion-icon>
+                        <span>{{item.cod_item}}</span>
+                      </div>
+                      <h4>{{item.des_item}}</h4>
+                    </div>
+                    <ion-checkbox
+                      [checked]="item.ind_selecionado"
+                      (ionChange)="addItem(item, $event, i)"
+                      [aria-label]="'Selecionar item ' + item.des_item"
+                    ></ion-checkbox>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer mode="ios" [ngClass]="{'conteudo': !auth.isMobile}">
+  <div
+    class="footer-actions"
+    *ngIf="this.movimento.pessoasSelecionadas.length > 0 && filtro === 'C'"
+  >
+    <ion-button
+      expand="block"
+      color="success"
+      (click)="setOpen(true)"
+      class="view-selected-button"
+    >
+      <ion-icon name="eye-outline" slot="start"></ion-icon>
+      Visualizar Clientes Adicionados ({{this.movimento.pessoasSelecionadas.length}})
+    </ion-button>
+  </div>
+
+  <ion-modal [isOpen]="isModalOpenCliente" mode="ios">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Clientes Selecionados</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false)">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <cdk-virtual-scroll-viewport itemSize="56" minBufferPx="900" maxBufferPx="1350">
+          <div
+            class="selected-client-card"
+            *cdkVirtualFor="let item of this.movimento.pessoasSelecionadas"
+          >
+            <div class="client-info">
+              <ion-icon name="person-circle-outline" class="client-icon"></ion-icon>
+              <div class="client-details">
+                <h4>{{item.nom_pessoa}}</h4>
+                <p>CNPJ: {{item.num_cnpj_cpf}}</p>
+              </div>
+            </div>
+            <ion-button
+              fill="clear"
+              color="danger"
+              (click)="removePessoa(item)"
+              class="remove-button"
+            >
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </cdk-virtual-scroll-viewport>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-footer>

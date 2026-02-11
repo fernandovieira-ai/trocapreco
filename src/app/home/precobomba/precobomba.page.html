@@ -1,0 +1,110 @@
+﻿<ion-header [translucent]="true" mode="ios" class="custom-header">
+  <ion-toolbar class="main-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Voltar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Preços Bomba</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" mode="ios" class="precobomba-content">
+  <!-- Gradiente de fundo -->
+  <div class="gradient-overlay"></div>
+
+  <!-- Conteúdo principal -->
+  <div class="content-wrapper" [ngClass]="{'desktop-mode': !auth.isMobile}">
+    <!-- Informações de ajuda -->
+    <div class="info-card">
+      <div class="card-header">
+        <ion-icon
+          name="information-circle-outline"
+          class="card-icon"
+        ></ion-icon>
+        <div class="card-title-section">
+          <h2 class="card-title">Atualizar Preços</h2>
+          <p class="card-subtitle">
+            Digite os novos valores para atualizar os preços de bomba
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de empresas e itens -->
+    <ng-container *ngFor="let empresaGroup of groupedItems">
+      <div class="empresa-section">
+        <div class="empresa-header">
+          <ion-icon name="business" class="empresa-icon"></ion-icon>
+          <div class="empresa-info">
+            <h3 class="empresa-title">{{ empresaGroup.cod_empresa }}</h3>
+            <p class="empresa-name">{{empresaGroup.nom_fantasia}}</p>
+          </div>
+        </div>
+
+        <div class="items-container">
+          <div
+            class="item-card"
+            *ngFor="let item of empresaGroup.items, let i = index"
+          >
+            <div class="item-header">
+              <ion-icon name="pricetag" class="item-icon"></ion-icon>
+              <span class="item-name">{{item.des_item}}</span>
+            </div>
+
+            <!-- Preço Atual -->
+            <div class="price-info">
+              <div class="current-price">
+                <span class="price-label">Preço Atual:</span>
+                <span class="price-value"
+                  >R$ {{item.val_preco_venda | number: '1.2-2'}}</span
+                >
+              </div>
+            </div>
+
+            <!-- Novo Preço -->
+            <div
+              class="item-input-container"
+              [class.has-value]="item.novoPreco"
+            >
+              <div class="input-label-highlight">
+                <ion-icon name="create-outline" class="edit-icon"></ion-icon>
+                <span>Novo Preço</span>
+                <ion-icon
+                  name="checkmark-circle"
+                  class="check-icon"
+                  *ngIf="item.novoPreco"
+                ></ion-icon>
+              </div>
+              <ion-input
+                (ionInput)="setNovoPreco($event, item)"
+                [clearInput]="true"
+                type="number"
+                inputmode="decimal"
+                placeholder="Digite o novo preço"
+                class="price-input"
+                [class.filled]="item.novoPreco"
+                fill="outline"
+              >
+                <ion-icon name="cash-outline" slot="start"></ion-icon>
+              </ion-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ion-content>
+
+<ion-footer mode="ios" class="custom-footer">
+  <div class="footer-wrapper" [ngClass]="{'desktop-mode': !auth.isMobile}">
+    <ion-button
+      expand="block"
+      class="submit-button"
+      (click)="enviarTroca()"
+      [disabled]="!groupedItems || groupedItems.length === 0"
+    >
+      <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+      Enviar Troca
+      <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+</ion-footer>

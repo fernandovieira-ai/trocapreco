@@ -1,0 +1,505 @@
+// Importar variáveis de tema
+@import '../../theme/colors.scss';
+
+// ===============================
+// HOME CONTENT
+// ===============================
+.home-content {
+  --background: transparent;
+  position: relative;
+}
+
+// Gradiente de fundo
+.gradient-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, $gradient-start 0%, $gradient-end 100%);
+  z-index: -1;
+}
+
+// ===============================
+// HEADER CUSTOMIZADO
+// ===============================
+.custom-header {
+  --background: transparent;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .main-toolbar {
+    --background: rgba(36, 2, 75, 0.95);
+    --color: $text-white;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    --min-height: auto;
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-sm $spacing-md;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    
+    .user-avatar {
+      ion-icon {
+        font-size: 48px;
+        color: $text-white;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+    }
+
+    .user-info {
+      .welcome-text {
+        margin: 0;
+        font-size: $font-lg;
+        font-weight: $font-semibold;
+        color: $text-white;
+        text-transform: capitalize;
+      }
+
+      .company-text {
+        margin: 0;
+        font-size: $font-sm;
+        color: rgba(255, 255, 255, 0.8);
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+
+  .action-chip {
+    --background: rgba(255, 255, 255, 0.15);
+    --color: $text-white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: $font-sm;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      --background: rgba(255, 255, 255, 0.25);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// ===============================
+// CONTENT WRAPPER
+// ===============================
+.content-wrapper {
+  padding: $spacing-lg;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &.desktop-mode {
+    max-width: 800px;
+  }
+}
+
+// ===============================
+// INFO CARD (Seleção de Empresas)
+// ===============================
+.info-card {
+  background: $card-background;
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  box-shadow: $shadow-lg;
+  border: 1px solid $card-border;
+  backdrop-filter: blur(20px);
+  animation: fadeInUp 0.6s ease-out;
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    .card-icon {
+      font-size: 40px;
+      color: $primary;
+    }
+
+    .card-title-section {
+      flex: 1;
+
+      .card-title {
+        margin: 0;
+        font-size: $font-xl;
+        font-weight: $font-bold;
+        color: $text-primary;
+      }
+
+      .card-subtitle {
+        margin: $spacing-xs 0 0 0;
+        font-size: $font-sm;
+        color: $text-secondary;
+      }
+    }
+  }
+
+  .select-button {
+    --border-color: $primary;
+    --color: $primary;
+    --border-radius: #{$radius-md};
+    font-weight: $font-medium;
+    margin-bottom: $spacing-md;
+
+    &:hover {
+      --background: rgba(36, 2, 75, 0.05);
+    }
+  }
+
+  .selected-badge {
+    text-align: center;
+    
+    ion-badge {
+      font-size: $font-sm;
+      padding: $spacing-xs $spacing-md;
+    }
+  }
+}
+
+// ===============================
+// SECTION HEADER
+// ===============================
+.section-header {
+  margin-bottom: $spacing-lg;
+  animation: fadeIn 0.8s ease-out;
+
+  .section-title {
+    margin: 0;
+    font-size: $font-2xl;
+    font-weight: $font-bold;
+    color: $text-white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .section-subtitle {
+    margin: $spacing-xs 0 0 0;
+    font-size: $font-md;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+// ===============================
+// FEATURES GRID
+// ===============================
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+}
+
+.feature-card {
+  background: $card-background;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: $shadow-md;
+  border: 1px solid $card-border;
+  backdrop-filter: blur(20px);
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-xl;
+  }
+
+  &:active {
+    transform: translateY(-2px);
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  .feature-icon-container {
+    width: 56px;
+    height: 56px;
+    border-radius: $radius-lg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 28px;
+      color: $white;
+    }
+
+    &.primary {
+      background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+    }
+
+    &.success {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    }
+
+    &.warning {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    }
+
+    &.info {
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    }
+
+    &.secondary {
+      background: linear-gradient(135deg, #4a0e78 0%, #6d28a0 100%);
+    }
+
+    &.tertiary {
+      background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    }
+  }
+
+  .feature-content {
+    flex: 1;
+
+    .feature-title {
+      margin: 0;
+      font-size: $font-md;
+      font-weight: $font-semibold;
+      color: $text-primary;
+    }
+
+    .feature-description {
+      margin: $spacing-xs 0 0 0;
+      font-size: $font-sm;
+      color: $text-secondary;
+      line-height: 1.4;
+    }
+  }
+
+  .feature-arrow {
+    font-size: 20px;
+    color: $medium-gray;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .feature-arrow {
+    transform: translateX(4px);
+  }
+}
+
+// ===============================
+// MODAL DE EMPRESAS
+// ===============================
+.empresa-modal {
+  --height: 80%;
+  --border-radius: #{$radius-xl};
+
+  .modal-toolbar {
+    --background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+    --color: $text-white;
+    
+    ion-title {
+      font-weight: $font-semibold;
+    }
+  }
+
+  .custom-searchbar {
+    --background: $input-background;
+    --border-radius: #{$radius-md};
+    --box-shadow: none;
+    padding: $spacing-sm $spacing-md;
+  }
+
+  .modal-content {
+    --padding-top: #{$spacing-md};
+    --padding-bottom: #{$spacing-md};
+  }
+
+  .empresa-list {
+    padding: 0 $spacing-md;
+  }
+
+  .empresa-item {
+    background: $card-background;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    margin-bottom: $spacing-md;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+    border: 1px solid $border-color;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $primary;
+      box-shadow: $shadow-sm;
+    }
+
+    .empresa-info {
+      flex: 1;
+
+      .empresa-nome {
+        margin: 0;
+        font-size: $font-md;
+        font-weight: $font-semibold;
+        color: $text-primary;
+      }
+
+      .empresa-codigo {
+        margin: $spacing-xs 0 0 0;
+        font-size: $font-sm;
+        color: $text-secondary;
+      }
+    }
+
+    .custom-checkbox {
+      --size: 24px;
+      --border-radius: 6px;
+      --checkmark-width: 2px;
+    }
+  }
+
+  .modal-footer {
+    border-top: 1px solid $divider-color;
+    padding: $spacing-md;
+
+    .footer-actions {
+      display: flex;
+      gap: $spacing-md;
+
+      ion-button {
+        flex: 1;
+        --border-radius: #{$radius-md};
+        font-weight: $font-medium;
+      }
+    }
+  }
+}
+
+// ===============================
+// MODAL DE USUÁRIOS
+// ===============================
+.users-modal {
+  --height: 80%;
+  --border-radius: #{$radius-xl};
+
+  .modal-toolbar {
+    --background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+    --color: $text-white;
+  }
+}
+
+// ===============================
+// ANIMAÇÕES
+// ===============================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===============================
+// RESPONSIVIDADE
+// ===============================
+@media (max-width: 768px) {
+  .custom-header {
+    .header-content {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content-wrapper {
+    padding: $spacing-md;
+  }
+}
+
+@media (max-width: 480px) {
+  .info-card {
+    padding: $spacing-lg;
+  }
+
+  .feature-card {
+    padding: $spacing-md;
+
+    .feature-icon-container {
+      width: 48px;
+      height: 48px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+
+  .section-header .section-title {
+    font-size: $font-xl;
+  }
+}
