@@ -13,7 +13,8 @@
     "lint": "ng lint",
     "ionic:serve": "ionic serve",
     "ionic:build": "ionic build",
-    "ionic:build:prod": "ionic build --prod"
+    "ionic:build:prod": "ionic build --prod",
+    "start:mobile": "node start-mobile.js"
   },
   "private": true,
   "dependencies": {

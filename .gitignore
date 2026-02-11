@@ -67,3 +67,6 @@ ajuste/server-macos
 
 # Build outputs do backend
 backend/node_modules/
+
+# Ambiente local para teste no celular (gerado automaticamente)
+src/environments/environment.local.ts
