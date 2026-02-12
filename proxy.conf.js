@@ -1,7 +1,7 @@
 const PROXY_CONFIG = {
   "/drfPriceSwap": {
-    target: "http://localhost:3000", // Backend local
-    secure: false,
+    target: "https://trocaprecoback-production-8514.up.railway.app", // Backend Railway
+    secure: true,
     changeOrigin: true,
     logLevel: "debug",
     onProxyReq: function (proxyReq, req, res) {

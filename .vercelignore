@@ -1,0 +1,47 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build
+.angular/
+dist/
+tmp/
+
+# Environment
+.env
+.env.local
+*.local.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend (não deve fazer deploy com frontend)
+backend/
+
+# Git
+.git/
+.gitignore
+
+# Docs e configs desnecessários para deploy
+*.md
+COMANDOS-GIT.txt
+FIX-*.txt
+LEIA-ME-*.txt
+start-mobile.js
+proxy.conf.js
+proxy.conf.json
+start-dev.bat
+
+# Tests
+*.spec.ts
+karma.conf.js
+e2e/
