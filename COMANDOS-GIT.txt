@@ -1,0 +1,26 @@
+# 🚀 COMANDOS PARA PUSH - BACKEND CORRIGIDO
+
+## Execute estes comandos em sequência:
+
+# 1. Entrar na pasta do backend pronto
+cd "C:\Linx\cliente\digitalrf\projeto\bkp\trocapreco"
+
+# 2. Inicializar git (se ainda não fez)
+git init
+
+# 3. Adicionar todos os arquivos
+git add .
+
+# 4. Fazer commit
+git commit -m "fix: substituir dotenv-safe por dotenv para Railway"
+
+# 5. Renomear branch para main
+git branch -M main
+
+# 6. Adicionar repositório remoto
+git remote add origin https://github.com/fernandovieira-ai/trocaprecoback.git
+
+# 7. Fazer push
+git push -u origin main
+
+# ✅ PRONTO! Railway fará redeploy automático em 1-2 minutos
