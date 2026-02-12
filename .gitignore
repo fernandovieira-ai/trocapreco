@@ -57,16 +57,11 @@ Thumbs.db
 # Backups
 *.BACKUP
 
-# Ajuste service (contém credenciais)
-ajuste/log.txt
-ajuste/uploads/
-ajuste/database/
-ajuste/server-win.exe
-ajuste/server-linux
-ajuste/server-macos
+# Ajuste service - nao subir
+ajuste/
 
-# Build outputs do backend
-backend/node_modules/
+# Backend - gerenciado separadamente
+backend/
 
 # Ambiente local para teste no celular (gerado automaticamente)
 src/environments/environment.local.ts

@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
-  endPoint: "http://131.100.231.201:3000/drfPriceSwap",
-  endPointSocket: "http://131.100.231.201:3000",
+  // TODO: Após deploy no Railway, substitua pela URL do seu backend
+  // Exemplo: https://trocapreco-production.railway.app/drfPriceSwap
+  endPoint: "https://SEU-PROJETO-BACKEND.railway.app/drfPriceSwap",
+  endPointSocket: "https://SEU-PROJETO-BACKEND.railway.app",
 };
