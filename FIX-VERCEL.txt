@@ -1,0 +1,147 @@
+═══════════════════════════════════════════════════════════════════
+    🔧 CORREÇÃO APLICADA - VERCEL BUILD
+═══════════════════════════════════════════════════════════════════
+
+✅ Alterações feitas e enviadas para GitHub
+
+═══════════════════════════════════════════════════════════════════
+    📝 O QUE FOI CORRIGIDO
+═══════════════════════════════════════════════════════════════════
+
+1. vercel.json
+   ✅ Atualizado buildCommand para: "npm run build:prod"
+   ✅ Adicionado version: 2
+   ✅ Ajustado routes (antes era rewrites)
+
+2. package.json
+   ✅ Criado script build:prod
+   ✅ Corrigido ionic:build:prod (--prod → --configuration production)
+
+═══════════════════════════════════════════════════════════════════
+    🚀 PRÓXIMOS PASSOS NA VERCEL
+═══════════════════════════════════════════════════════════════════
+
+OPÇÃO 1 - REDEPLOY AUTOMÁTICO (Recomendado)
+--------------------------------------------
+A Vercel detectará o push no GitHub e fará redeploy automático.
+Aguarde 2-3 minutos e veja o status em: https://vercel.com/dashboard
+
+
+OPÇÃO 2 - REDEPLOY MANUAL
+--------------------------
+Se não funcionar automaticamente:
+
+1. Acesse: https://vercel.com
+2. Vá para seu projeto
+3. Clique em "Deployments"
+4. Clique nos "..." do último deployment
+5. Clique em "Redeploy"
+
+
+OPÇÃO 3 - RECONFIGURAR PROJETO (Se necessário)
+-----------------------------------------------
+Se ainda der erro, reconfigure:
+
+1. Acesse seu projeto na Vercel
+2. Vá em Settings → General
+3. Em "Build & Development Settings":
+
+   Framework Preset: Other
+   
+   Build Command:
+   npm run build:prod
+   
+   Output Directory:
+   www
+   
+   Install Command:
+   npm install
+
+4. Salve e faça "Redeploy"
+
+═══════════════════════════════════════════════════════════════════
+    ⚠️ ERRO QUE VOCÊ TEVE
+═══════════════════════════════════════════════════════════════════
+
+ERRO: "ng serve --proxi-config proxy.conf.js"
+
+CAUSA:
+- Vercel tentou executar servidor de desenvolvimento (ng serve)
+- Isso acontece quando não há buildCommand configurado corretamente
+
+SOLUÇÃO:
+- Agora está configurado para executar: npm run build:prod
+- Que faz build de produção usando: ng build --configuration production
+
+═══════════════════════════════════════════════════════════════════
+    ✅ O QUE ESPERAR AGORA
+═══════════════════════════════════════════════════════════════════
+
+Logs de build devem mostrar:
+
+✅ Installing dependencies...
+✅ Running build:prod...
+✅ Building Angular application...
+✅ Build completed successfully
+✅ Output directory: www
+✅ Deploy successful
+
+Tempo estimado: 3-5 minutos
+
+═══════════════════════════════════════════════════════════════════
+    🔍 SE AINDA DER ERRO
+═══════════════════════════════════════════════════════════════════
+
+ERRO: "Cannot find module '@angular/cli'"
+→ Normal, a Vercel instala automaticamente
+
+ERRO: Build warnings sobre CommonJS
+→ Normal, são apenas avisos (moment, crypto-js, socket.io)
+→ Não impedem o build
+
+ERRO: "Output directory 'www' is empty"
+→ Verifique se está usando "www" e não "dist"
+→ Em angular.json, outputPath deve ser "www"
+
+═══════════════════════════════════════════════════════════════════
+    📊 APÓS DEPLOY BEM-SUCEDIDO
+═══════════════════════════════════════════════════════════════════
+
+1. Copie a URL da Vercel (ex: https://trocapreco.vercel.app)
+
+2. Atualize o CORS no backend:
+   
+   Arquivo: C:\Linx\cliente\digitalrf\projeto\bkp\trocapreco\backend\server.js
+   
+   Adicione sua URL no array allowed (linha ~24):
+   
+   const allowed = [
+     "http://localhost:4200",
+     "http://localhost:8100",
+     "https://SEU-PROJETO.vercel.app",  // ← ADICIONE AQUI
+   ];
+
+3. Faça push do backend:
+   
+   cd "C:\Linx\cliente\digitalrf\projeto\bkp\trocapreco"
+   git add backend/server.js
+   git commit -m "chore: adicionar URL da Vercel ao CORS"
+   git push
+
+4. Railway fará redeploy automático
+
+═══════════════════════════════════════════════════════════════════
+    ✨ TUDO PRONTO!
+═══════════════════════════════════════════════════════════════════
+
+✅ Código corrigido
+✅ Push feito para GitHub
+✅ Vercel detectará mudanças automaticamente
+
+Aguarde 3-5 minutos e verifique o deployment na Vercel! 🚀
+
+═══════════════════════════════════════════════════════════════════
+
+Data: 12/02/2026
+Commit: ce78ce6
+Fix: Build command para produção
