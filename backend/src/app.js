@@ -10,13 +10,25 @@ const cors = require("cors");
 const app = express();
 
 const corsOptions = {
-  origin: [
-    "http://localhost",
-    "http://localhost:4200",
-    "http://localhost:8100",
-    "http://192.168.100.12:4200",
-    "https://drf-trocaprecos.web.app",
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost",
+      "http://localhost:4200",
+      "http://localhost:8100",
+      "http://192.168.100.12:4200",
+      "https://drf-trocaprecos.web.app",
+      "https://trocaprecopub.vercel.app",
+    ];
+
+    if (!origin) return callback(null, true);
+    if (origin.endsWith(".vercel.app")) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS: origem nao permitida: " + origin));
+    }
+  },
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };

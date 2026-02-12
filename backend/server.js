@@ -15,11 +15,17 @@ const server = http.createServer(app);
 // Configuração do Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:4200",
-      "http://localhost:8100",
-      "http://192.168.100.12:4200",
-    ],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (origin.endsWith(".vercel.app")) return callback(null, true);
+      const allowed = [
+        "http://localhost:4200",
+        "http://localhost:8100",
+        "http://192.168.100.12:4200",
+        "https://trocaprecopub.vercel.app",
+      ];
+      callback(null, allowed.includes(origin));
+    },
     methods: ["GET", "POST"],
   },
 });
