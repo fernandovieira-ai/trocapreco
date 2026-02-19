@@ -11,6 +11,7 @@ export class WebsocketService {
   socket: any;
   observableExecutado = 0
   executouBuscaTarefas = 0
+  private refreshListenerAttached = false;
 
   constructor() { }
 
@@ -59,15 +60,28 @@ export class WebsocketService {
   // }
 
   getAtualizacaoTarefas(): Observable<any> {
-
-    if (!this.tarefasSubject.observed) {
+    if (!this.refreshListenerAttached) {
       this.socket.on('refresh', (data) => this.tarefasSubject.next(data));
       this.socket.on('error', (error) => this.tarefasSubject.error(error));
+      this.refreshListenerAttached = true;
     }
     return this.tarefasSubject.asObservable();
   }
 
   setAtualiacaoTarefas( usuario, room ){
     this.socket.emit('atualizacaoAprovacaoTrocaPreco', {usuario: usuario, room: room });
+  }
+
+  cleanup() {
+    if (this.refreshListenerAttached && this.socket) {
+      this.socket.off('refresh');
+      this.socket.off('error');
+      this.refreshListenerAttached = false;
+    }
+    
+    if (this.tarefasSubject) {
+      this.tarefasSubject.complete();
+      this.tarefasSubject = new ReplaySubject<any>(1);
+    }
   }
 }

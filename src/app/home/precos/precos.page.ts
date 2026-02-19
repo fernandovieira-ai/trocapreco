@@ -4,11 +4,12 @@
   pessoaNegociacao,
   tipoPreco,
 } from "./../../class/user";
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { takeUntil } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { IonAccordionGroup, LoadingController } from "@ionic/angular";
 import * as moment from "moment";
-import { timeout, tap, finalize, catchError, switchMap, EMPTY, of } from "rxjs";
+import { timeout, tap, finalize, catchError, switchMap, EMPTY, of } , Subject } from "rxjs";
 import { Alert } from "src/app/class/alert";
 import { item } from "src/app/class/user";
 import { AuthService } from "src/app/services/auth.service";
@@ -21,7 +22,9 @@ import { MovimentoService } from "src/app/services/movimento.service";
   styleUrls: ["./precos.page.scss"],
   standalone: false,
 })
-export class PrecosPage implements OnInit {
+export class PrecosPage implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   @ViewChild("accordionGroup", { static: true })
   accordionGroup!: IonAccordionGroup;
 
@@ -819,5 +822,10 @@ export class PrecosPage implements OnInit {
     }
     // Todos os critÃ©rios foram atendidos
     return true;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

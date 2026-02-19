@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { takeUntil } from "rxjs/operators";
 import { AuthService } from "../services/auth.service";
 import { MovimentoService } from "../services/movimento.service";
 import { IonModal, LoadingController, Platform } from "@ionic/angular";
 import { Alert } from "../class/alert";
-import { catchError, finalize, tap, timeout } from "rxjs";
+import { catchError, finalize, tap, timeout } , Subject } from "rxjs";
 import { empresa, newUser, user } from "../class/user";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
@@ -16,7 +17,9 @@ import { DataloadService } from "../services/dataload.service";
   styleUrls: ["home.page.scss"],
   standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   @ViewChild(IonModal) modal: IonModal;
 
   isModalOpenUser = false;
@@ -623,5 +626,10 @@ export class HomePage implements OnInit {
         3000,
       );
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -3,7 +3,7 @@ import { Alert } from 'src/app/class/alert';
 import { AuthService } from 'src/app/services/auth.service';
 import { MovimentoService } from 'src/app/services/movimento.service';
 import { minhasNegociacoes } from './../../class/user';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { tap, timeout, catchError } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -13,7 +13,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./historico.page.scss'],
   standalone: false
 })
-export class HistoricoPage implements OnInit {
+export class HistoricoPage implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
 
   public minhasNegociacoes: minhasNegociacoes[] = []
   public progress
@@ -61,5 +63,10 @@ export class HistoricoPage implements OnInit {
     } else {
       this.alert.presentToast('Tempo de retorno da solicitação atingido, tente novamente', 3000);
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

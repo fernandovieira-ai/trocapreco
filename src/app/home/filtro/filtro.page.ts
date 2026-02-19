@@ -6,10 +6,11 @@ import {
   formaPagto,
   itemfull,
 } from "./../../class/user";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { takeUntil } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { LoadingController } from "@ionic/angular";
-import { timeout, tap, catchError, finalize } from "rxjs";
+import { timeout, tap, catchError, finalize } , Subject } from "rxjs";
 import { Alert } from "src/app/class/alert";
 import { AuthService } from "src/app/services/auth.service";
 import { DataloadService } from "src/app/services/dataload.service";
@@ -21,7 +22,9 @@ import { MovimentoService } from "src/app/services/movimento.service";
   styleUrls: ["./filtro.page.scss"],
   standalone: false,
 })
-export class FiltroPage implements OnInit {
+export class FiltroPage implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   //public pessoa: pessoa[] = []
   //public filtroPessoa = [...this.pessoa]
   //public regiao: regiao[] = []
@@ -592,5 +595,10 @@ export class FiltroPage implements OnInit {
     this.resultadosVisiveis = [];
     this.paginaAtual = 0;
     this.temMaisResultados = false;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
