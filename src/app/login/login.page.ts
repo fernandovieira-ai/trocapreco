@@ -148,6 +148,39 @@ export class LoginPage implements OnInit, AfterViewInit {
   // Particulas
   private particles: any[] = [];
   private animationId: number = 0;
+  private ambientAnimationId: number = 0;
+
+  // Event handlers (para poder remover depois)
+  private resizeHandler = () => {
+    if (this.particlesCanvas?.nativeElement) {
+      const canvas = this.particlesCanvas.nativeElement;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+    }
+  };
+
+  private keydownHandler = (event: KeyboardEvent) => {
+    if (event.key === "Enter" && !this.isLoading) {
+      this.login();
+    }
+  };
+
+  private onlineHandler = () => {
+    this.connectionStatus = true;
+    this.showMessage("Conexão restaurada", "success");
+  };
+
+  private offlineHandler = () => {
+    this.connectionStatus = false;
+    this.showMessage("Sem conexão com a internet", "error");
+  };
+
+  private appinstalledHandler = () => {
+    this.deferredPrompt = null;
+    this.isStandaloneMode = true;
+    this.showMessage("App instalado com sucesso!", "success");
+  };
 
   constructor(
     public router: Router,
@@ -493,7 +526,7 @@ export class LoginPage implements OnInit, AfterViewInit {
   private startAmbientAnimations(): void {
     // Animação de cores dinâmicas no background
     let hue = 200;
-    setInterval(() => {
+    this.ambientAnimationId = setInterval(() => {
       hue = (hue + 0.1) % 360;
       document.documentElement.style.setProperty(
         "--background",
@@ -502,51 +535,31 @@ export class LoginPage implements OnInit, AfterViewInit {
           hsl(${(hue + 40) % 360}, 70%, 50%) 50%,
           hsl(${(hue + 80) % 360}, 70%, 40%) 100%)`,
       );
-    }, 50);
+    }, 50) as unknown as number;
   }
 
   // ============== MÉTODOS AUXILIARES ==============
   private setupEventListeners(): void {
-    window.addEventListener("resize", () => {
-      if (this.particlesCanvas?.nativeElement) {
-        const canvas = this.particlesCanvas.nativeElement;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = canvas.offsetWidth * dpr;
-        canvas.height = canvas.offsetHeight * dpr;
-      }
-    });
-
-    // Detectar tecla Enter para login
-    document.addEventListener("keydown", (event: KeyboardEvent) => {
-      if (event.key === "Enter" && !this.isLoading) {
-        this.login();
-      }
-    });
+    window.addEventListener("resize", this.resizeHandler);
+    document.addEventListener("keydown", this.keydownHandler);
   }
 
   private checkConnection(): void {
     this.connectionStatus = navigator.onLine;
-
-    window.addEventListener("online", () => {
-      this.connectionStatus = true;
-      this.showMessage("Conexão restaurada", "success");
-    });
-
-    window.addEventListener("offline", () => {
-      this.connectionStatus = false;
-      this.showMessage("Sem conexão com a internet", "error");
-    });
+    window.addEventListener("online", this.onlineHandler);
+    window.addEventListener("offline", this.offlineHandler);
   }
 
   private checkForUpdates(): void {
     if (this.swUpdate.isEnabled) {
-      this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
+      const versionSub = this.swUpdate.versionUpdates.subscribe((event: VersionEvent) => {
         if (event.type === "VERSION_READY") {
           this.hasUpdate = true;
           this.dataLoad.atualizacaoDisponivel = true;
           this.mostrarToastAtualizacao();
         }
       });
+      this.subscriptions.add(versionSub);
 
       // Verificar atualizações periodicamente
       const intervalSub = interval(300000).subscribe(() => {
@@ -557,17 +570,28 @@ export class LoginPage implements OnInit, AfterViewInit {
   }
 
   private setupPWA(): void {
-    window.addEventListener("appinstalled", () => {
-      this.deferredPrompt = null;
-      this.isStandaloneMode = true;
-      this.showMessage("App instalado com sucesso!", "success");
-    });
+    window.addEventListener("appinstalled", this.appinstalledHandler);
   }
 
   private cleanup(): void {
+    // Cancelar requestAnimationFrame
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+
+    // Parar setInterval
+    if (this.ambientAnimationId) {
+      clearInterval(this.ambientAnimationId);
+    }
+
+    // Remover event listeners
+    window.removeEventListener("resize", this.resizeHandler);
+    document.removeEventListener("keydown", this.keydownHandler);
+    window.removeEventListener("online", this.onlineHandler);
+    window.removeEventListener("offline", this.offlineHandler);
+    window.removeEventListener("appinstalled", this.appinstalledHandler);
+
+    // Cancelar subscriptions RxJS
     this.subscriptions.unsubscribe();
   }
 
