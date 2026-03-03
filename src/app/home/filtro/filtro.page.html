@@ -244,7 +244,35 @@
             <h3 class="date-filter-title">Pesquisar por Data de Cadastro</h3>
           </div>
 
+          <div class="date-inputs">
+            <ion-item>
+              <ion-label position="stacked">DATA INICIAL</ion-label>
+              <ion-input
+                type="date"
+                [(ngModel)]="dataCadastroInicial"
+                placeholder="dd/mm/aaaa"
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">DATA FINAL</ion-label>
+              <ion-input
+                type="date"
+                [(ngModel)]="dataCadastroFinal"
+                placeholder="dd/mm/aaaa"
+              ></ion-input>
+            </ion-item>
+          </div>
+
           <div class="date-actions">
+            <ion-button
+              expand="block"
+              fill="clear"
+              color="medium"
+              size="small"
+              (click)="limparFiltroData()"
+            >
+              Limpar
+            </ion-button>
             <ion-button
               expand="block"
               fill="solid"
@@ -254,7 +282,7 @@
               class="apply-date-button"
             >
               <ion-icon name="filter-outline" slot="start"></ion-icon>
-              Aplicar Filtro
+              Aplicar
             </ion-button>
           </div>
         </div>

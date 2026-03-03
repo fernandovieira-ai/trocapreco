@@ -14,6 +14,7 @@ import { Alert } from "src/app/class/alert";
 import { AuthService } from "src/app/services/auth.service";
 import { DataloadService } from "src/app/services/dataload.service";
 import { MovimentoService } from "src/app/services/movimento.service";
+import * as moment from "moment";
 
 @Component({
   selector: "app-filtro",
@@ -135,29 +136,53 @@ export class FiltroPage implements OnInit {
         return;
       }
 
+      // Converte as datas do filtro para moment
+      const dataInicialMoment = this.dataCadastroInicial
+        ? moment(this.dataCadastroInicial)
+        : null;
+      const dataFinalMoment = this.dataCadastroFinal
+        ? moment(this.dataCadastroFinal)
+        : null;
+
+      console.log("Datas convertidas:", {
+        inicial: dataInicialMoment?.format("YYYY-MM-DD"),
+        final: dataFinalMoment?.format("YYYY-MM-DD"),
+      });
+
       // Filtra por data
       let resultadosFiltrados = this.dataLoad.pessoa.filter((d) => {
         if (!d.dta_cadastro) {
           return false;
         }
 
-        const dataCadastro = d.dta_cadastro.substring(0, 10); // YYYY-MM-DD
+        // Converte a data do cadastro para moment (suporta vários formatos)
+        const dataCadastroMoment = moment(d.dta_cadastro);
+
+        if (!dataCadastroMoment.isValid()) {
+          console.warn(
+            "Data inválida encontrada:",
+            d.dta_cadastro,
+            "para pessoa:",
+            d.nom_pessoa,
+          );
+          return false;
+        }
 
         // Se só tem data inicial, filtra >= data inicial
-        if (this.dataCadastroInicial && !this.dataCadastroFinal) {
-          return dataCadastro >= this.dataCadastroInicial;
+        if (dataInicialMoment && !dataFinalMoment) {
+          return dataCadastroMoment.isSameOrAfter(dataInicialMoment, "day");
         }
 
         // Se só tem data final, filtra <= data final
-        if (!this.dataCadastroInicial && this.dataCadastroFinal) {
-          return dataCadastro <= this.dataCadastroFinal;
+        if (!dataInicialMoment && dataFinalMoment) {
+          return dataCadastroMoment.isSameOrBefore(dataFinalMoment, "day");
         }
 
         // Se tem ambas, filtra no intervalo
-        if (this.dataCadastroInicial && this.dataCadastroFinal) {
+        if (dataInicialMoment && dataFinalMoment) {
           return (
-            dataCadastro >= this.dataCadastroInicial &&
-            dataCadastro <= this.dataCadastroFinal
+            dataCadastroMoment.isSameOrAfter(dataInicialMoment, "day") &&
+            dataCadastroMoment.isSameOrBefore(dataFinalMoment, "day")
           );
         }
 
