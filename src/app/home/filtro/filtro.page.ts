@@ -136,54 +136,93 @@ export class FiltroPage implements OnInit {
         return;
       }
 
-      // Converte as datas do filtro para moment
-      const dataInicialMoment = this.dataCadastroInicial
-        ? moment(this.dataCadastroInicial)
-        : null;
-      const dataFinalMoment = this.dataCadastroFinal
-        ? moment(this.dataCadastroFinal)
-        : null;
+      // Converte as datas do filtro para strings YYYY-MM-DD (evita problemas de timezone)
+      const dataInicial = this.dataCadastroInicial || "";
+      const dataFinal = this.dataCadastroFinal || "";
 
-      console.log("Datas convertidas:", {
-        inicial: dataInicialMoment?.format("YYYY-MM-DD"),
-        final: dataFinalMoment?.format("YYYY-MM-DD"),
+      console.log("Datas para filtro:", {
+        inicial: dataInicial,
+        final: dataFinal,
       });
 
-      // Filtra por data
-      let resultadosFiltrados = this.dataLoad.pessoa.filter((d) => {
+      // Debug: Mostra exemplos de datas do banco
+      if (pessoasComData.length > 0) {
+        const exemplos = pessoasComData.slice(0, 5).map((p) => {
+          const dataMoment = moment(p.dta_cadastro);
+          return {
+            nome: p.nom_pessoa,
+            dta_cadastro_original: p.dta_cadastro,
+            dta_cadastro_formatada: dataMoment.isValid()
+              ? dataMoment.format("YYYY-MM-DD")
+              : "INVÁLIDA",
+          };
+        });
+        console.log("📋 Exemplos de datas no banco:", exemplos);
+      }
+
+      // Filtra por data usando comparação de strings YYYY-MM-DD
+      let resultadosFiltrados = this.dataLoad.pessoa.filter((d, index) => {
         if (!d.dta_cadastro) {
           return false;
         }
 
-        // Converte a data do cadastro para moment (suporta vários formatos)
+        // Converte a data do cadastro para string YYYY-MM-DD
         const dataCadastroMoment = moment(d.dta_cadastro);
 
         if (!dataCadastroMoment.isValid()) {
-          console.warn(
-            "Data inválida encontrada:",
-            d.dta_cadastro,
-            "para pessoa:",
-            d.nom_pessoa,
-          );
+          if (index < 3) {
+            console.warn(
+              "⚠️ Data inválida:",
+              d.dta_cadastro,
+              "para:",
+              d.nom_pessoa,
+            );
+          }
           return false;
         }
 
+        const dataCadastroStr = dataCadastroMoment.format("YYYY-MM-DD");
+
+        // Debug: Log das primeiras 3 comparações
+        if (index < 3) {
+          console.log(`🔍 Comparando cliente ${index + 1}:`, {
+            nome: d.nom_pessoa,
+            dta_cadastro_original: d.dta_cadastro,
+            dta_cadastro_formatada: dataCadastroStr,
+            dataInicial: dataInicial,
+            dataFinal: dataFinal,
+            comparacao_inicial: dataInicial
+              ? `${dataCadastroStr} >= ${dataInicial} = ${dataCadastroStr >= dataInicial}`
+              : "N/A",
+            comparacao_final: dataFinal
+              ? `${dataCadastroStr} <= ${dataFinal} = ${dataCadastroStr <= dataFinal}`
+              : "N/A",
+          });
+        }
+
         // Se só tem data inicial, filtra >= data inicial
-        if (dataInicialMoment && !dataFinalMoment) {
-          return dataCadastroMoment.isSameOrAfter(dataInicialMoment, "day");
+        if (dataInicial && !dataFinal) {
+          return dataCadastroStr >= dataInicial;
         }
 
         // Se só tem data final, filtra <= data final
-        if (!dataInicialMoment && dataFinalMoment) {
-          return dataCadastroMoment.isSameOrBefore(dataFinalMoment, "day");
+        if (!dataInicial && dataFinal) {
+          return dataCadastroStr <= dataFinal;
         }
 
         // Se tem ambas, filtra no intervalo
-        if (dataInicialMoment && dataFinalMoment) {
-          return (
-            dataCadastroMoment.isSameOrAfter(dataInicialMoment, "day") &&
-            dataCadastroMoment.isSameOrBefore(dataFinalMoment, "day")
-          );
+        if (dataInicial && dataFinal) {
+          const dentroIntervalo =
+            dataCadastroStr >= dataInicial && dataCadastroStr <= dataFinal;
+
+          if (index < 3) {
+            console.log(
+              dentroIntervalo ? "✓" : "✗",
+              `Cliente ${d.nom_pessoa} - Data: ${dataCadastroStr} ${dentroIntervalo ? "está entre" : "NÃO está entre"} ${dataInicial} e ${dataFinal}`,
+            );
+          }
+
+          return dentroIntervalo;
         }
 
         return true;
