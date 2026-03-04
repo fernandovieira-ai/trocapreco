@@ -108,18 +108,23 @@ export class FiltroPage implements OnInit {
   aplicarFiltroData() {
     // Busca apenas por data (sem precisar de texto na searchbar)
     if (this.dataCadastroInicial || this.dataCadastroFinal) {
+      console.log("Aplicando filtro de data:", {
         inicial: this.dataCadastroInicial,
         final: this.dataCadastroFinal,
       });
 
       // Debug: Verifica se pessoas têm dta_cadastro
+      console.log("Total de pessoas:", this.dataLoad.pessoa.length);
       if (this.dataLoad.pessoa.length > 0) {
+        console.log("Exemplo de pessoa:", this.dataLoad.pessoa[0]);
+        console.log(
           "Propriedades da pessoa:",
           Object.keys(this.dataLoad.pessoa[0]),
         );
       }
 
       const pessoasComData = this.dataLoad.pessoa.filter((d) => d.dta_cadastro);
+      console.log(
         `Pessoas com dta_cadastro: ${pessoasComData.length} de ${this.dataLoad.pessoa.length}`,
       );
 
@@ -135,6 +140,7 @@ export class FiltroPage implements OnInit {
       const dataInicial = this.dataCadastroInicial || "";
       const dataFinal = this.dataCadastroFinal || "";
 
+      console.log("Datas para filtro:", {
         inicial: dataInicial,
         final: dataFinal,
       });
@@ -151,6 +157,7 @@ export class FiltroPage implements OnInit {
               : "INVÁLIDA",
           };
         });
+        console.log("📋 Exemplos de datas no banco:", exemplos);
       }
 
       // Filtra por data usando comparação de strings YYYY-MM-DD
@@ -164,6 +171,7 @@ export class FiltroPage implements OnInit {
 
         if (!dataCadastroMoment.isValid()) {
           if (index < 3) {
+            console.warn(
               "⚠️ Data inválida:",
               d.dta_cadastro,
               "para:",
@@ -177,6 +185,7 @@ export class FiltroPage implements OnInit {
 
         // Debug: Log das primeiras 3 comparações
         if (index < 3) {
+          console.log(`🔍 Comparando cliente ${index + 1}:`, {
             nome: d.nom_pessoa,
             dta_cadastro_original: d.dta_cadastro,
             dta_cadastro_formatada: dataCadastroStr,
@@ -207,6 +216,7 @@ export class FiltroPage implements OnInit {
             dataCadastroStr >= dataInicial && dataCadastroStr <= dataFinal;
 
           if (index < 3) {
+            console.log(
               dentroIntervalo ? "✓" : "✗",
               `Cliente ${d.nom_pessoa} - Data: ${dataCadastroStr} ${dentroIntervalo ? "está entre" : "NÃO está entre"} ${dataInicial} e ${dataFinal}`,
             );
@@ -231,6 +241,7 @@ export class FiltroPage implements OnInit {
       this.resultadosVisiveis = [];
       this.carregarMaisResultados();
 
+      console.log(
         `📅 ${resultadosFiltrados.length} clientes encontrados com filtro de data`,
       );
     }
@@ -248,6 +259,7 @@ export class FiltroPage implements OnInit {
   }
 
   pesquisaCliente(event) {
+    console.log(event.target.value);
     if (event.target.value.length === 0 || event.target.value.length < 3) {
       this.dataLoad.filtroPessoa = [];
       this.todosResultados = [];
@@ -303,6 +315,7 @@ export class FiltroPage implements OnInit {
 
       // Se houver muitos resultados, notifica o usuário
       if (this.todosResultados.length > this.TAMANHO_PAGINA) {
+        console.log(
           `🚀 Encontrados ${this.todosResultados.length} clientes. Mostrando ${this.TAMANHO_PAGINA} por vez.`,
         );
       }
@@ -425,6 +438,8 @@ export class FiltroPage implements OnInit {
 
     const codItensParaMarcar = ev.detail.value;
 
+    console.log("🔍 Itens para marcar:", codItensParaMarcar);
+
     // Marca todos os itens que têm cod_item na lista, independente da empresa
     this.item.forEach((item) => {
       if (codItensParaMarcar.includes(item.cod_item)) {
@@ -433,6 +448,7 @@ export class FiltroPage implements OnInit {
       }
     });
 
+    console.log(
       "✅ Total de itens marcados:",
       this.movimento.itemSelecionado.length,
     );
@@ -453,6 +469,7 @@ export class FiltroPage implements OnInit {
     filtroObservable
       .pipe(
         tap((data) => {
+          console.log(data);
           this.item = data.item;
           this.itemfull = data.itemfull;
           this.movimento.formaPagto = data.formaPagto;
@@ -572,24 +589,30 @@ export class FiltroPage implements OnInit {
 
   // Limpa seleções ao sair da página
   ionViewWillLeave() {
+    console.log("🚪 Saindo da tela de filtro");
     // Marca que está dentro do fluxo (indo para tela de itens)
     this.dentroDoFluxo = true;
   }
 
   // Mostra clientes selecionados ao entrar na página
   ionViewWillEnter() {
+    console.log("🚪 Entrando na tela de filtro");
+    console.log("🔄 Dentro do fluxo?", this.dentroDoFluxo);
+    console.log(
       "📊 Pessoas selecionadas:",
       this.movimento.pessoasSelecionadas.length,
     );
 
     // Se está voltando de dentro do fluxo (ex: tela de itens)
     if (this.dentroDoFluxo) {
+      console.log("✅ Voltando de dentro do fluxo - mantém seleções");
 
       // Mostra os clientes selecionados
       if (
         this.movimento.pessoasSelecionadas &&
         this.movimento.pessoasSelecionadas.length > 0
       ) {
+        console.log(
           `📋 Mostrando ${this.movimento.pessoasSelecionadas.length} clientes já selecionados`,
         );
 
@@ -612,6 +635,7 @@ export class FiltroPage implements OnInit {
       }
     } else {
       // Está vindo da home (novo fluxo) - limpa tudo
+      console.log("🆕 Entrando em novo fluxo - limpa tudo");
       this.movimento.pessoasSelecionadas = [];
       this.movimento.regiaoSelecionada = [];
       this.movimento.itemSelecionado = [];

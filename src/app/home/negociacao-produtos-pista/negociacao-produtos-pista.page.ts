@@ -114,6 +114,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log("NegociacaoProdutosPistaPage initialized");
 
     if (!this.dataLoad || !this.dataLoad.pessoa) {
       console.error("DataLoad não inicializado. Redirecionando...");
@@ -127,6 +128,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    console.log(
       "NegociacaoProdutosPistaPage Will Enter - Limpando estado anterior",
     );
     // Limpar todos os dados ao entrar na página para evitar estado residual
@@ -160,15 +162,19 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
     try {
       // Carregar produtos pista filtrados por subgrupos
       if (!this.produtosDisponiveis || this.produtosDisponiveis.length === 0) {
+        console.log("=== DEBUG CARREGAMENTO DE PRODUTOS ===");
+        console.log(
           "Empresas selecionadas pelo usuário:",
           this.auth.userLogado.cod_empresa_sel,
         );
+        console.log(
           "Total de empresas selecionadas:",
           this.auth.userLogado.cod_empresa_sel?.length,
         );
 
         // Executar sp_custo_preco de forma assíncrona (não espera terminar)
         // Isso atualiza custos e preços em background para não deixar lento
+        console.log(
           "Iniciando atualização de custos e preços em background...",
         );
         this.movimento
@@ -178,11 +184,13 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
           )
           .subscribe({
             next: (response) => {
+              console.log(
                 "✓ Custos e preços atualizados com sucesso",
                 response,
               );
             },
             error: (error) => {
+              console.warn(
                 "Erro ao atualizar custos e preços (não bloqueia):",
                 error,
               );
@@ -198,11 +206,15 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
           .toPromise();
 
         const empresas = subgruposData?.empresas || [];
+        console.log("=== DEBUG CARREGAMENTO ===");
+        console.log("DEBUG - Empresas retornadas do backend:", empresas.length);
+        console.log(
           "DEBUG - Códigos das empresas retornadas:",
           empresas.map((e) => ({ cod: e.cod_empresa, nome: e.nom_fantasia })),
         );
 
         if (empresas.length > 0) {
+          console.log(
             "DEBUG - Primeira empresa completa:",
             JSON.stringify(empresas[0], null, 2),
           );
@@ -211,8 +223,10 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
         // Achatar a estrutura hierárquica para lista de produtos
         const produtosFiltrados = [];
         empresas.forEach((empresa) => {
+          console.log(
             `Processando empresa: ${empresa.cod_empresa} - ${empresa.nom_fantasia}`,
           );
+          console.log(`  Subgrupos: ${empresa.subgrupos?.length || 0}`);
 
           let produtosEmpresa = 0;
           empresa.subgrupos.forEach((subgrupo) => {
@@ -227,9 +241,11 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
               produtosEmpresa++;
             });
           });
+          console.log(`  Total produtos desta empresa: ${produtosEmpresa}`);
         });
 
         this.produtosDisponiveis = produtosFiltrados;
+        console.log(
           "DEBUG - Total produtos pista disponíveis:",
           this.produtosDisponiveis.length,
         );
@@ -240,7 +256,9 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
           const key = `${p.cod_empresa} - ${p.nom_fantasia}`;
           distribuicao.set(key, (distribuicao.get(key) || 0) + 1);
         });
+        console.log("DEBUG - Distribuição de produtos por empresa:");
         distribuicao.forEach((count, empresa) => {
+          console.log(`  ${empresa}: ${count} produtos`);
         });
 
         // Extrair lista única de subgrupos
@@ -261,6 +279,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
           }))
           .sort((a, b) => a.des_subgrupo.localeCompare(b.des_subgrupo));
 
+        console.log(
           "DEBUG - Subgrupos disponíveis:",
           this.subgruposDisponiveis.length,
         );
@@ -293,6 +312,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
         return nomeA.localeCompare(nomeB);
       });
 
+      console.log("✓ Produtos disponíveis:", this.produtosFiltrados.length);
 
       await loading.dismiss();
 
@@ -321,6 +341,9 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
       this.currentStep++;
 
       if (this.currentStep === 3) {
+        console.log("=== STEP 3: Produtos Selecionados ===");
+        console.log("Total:", this.produtosSelecionados.length);
+        console.log("Dados:", this.produtosSelecionados.slice(0, 2));
       }
     } else if (this.currentStep === this.totalSteps) {
       this.enviarNegociacao();
@@ -371,6 +394,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
       !this.dataLoad.pessoa ||
       !Array.isArray(this.dataLoad.pessoa)
     ) {
+      console.warn("Dados de clientes não disponíveis");
       this.clientesFiltrados = [];
       return;
     }
@@ -380,6 +404,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
     const temFiltroData = this.dataCadastroInicial || this.dataCadastroFinal;
 
     if (!temFiltroTexto && !temFiltroData) {
+      console.log(
         "Nenhum filtro aplicado. Use a busca (mín. 3 caracteres) ou filtro de data.",
       );
       this.clientesFiltrados = [];
@@ -484,6 +509,8 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
 
     if (!temFiltroAtivo) {
       // Sem filtros ativos - não mostrar produtos
+      console.log("=== DEBUG filtrarProdutos ===");
+      console.log("Nenhum filtro ativo - não mostrando produtos");
       this.produtosFiltrados = [];
       this.groupedProdutos = [];
       return;
@@ -510,14 +537,18 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
       );
     }
 
+    console.log("=== DEBUG filtrarProdutos ===");
+    console.log("Total produtos filtrados:", produtos.length);
 
     // Check unique companies in filtered products
     const empresasUnicas = new Set(
       produtos.map((p) => p.cod_empresa).filter((c) => c),
     );
+    console.log(
       "Empresas únicas nos produtos filtrados:",
       Array.from(empresasUnicas),
     );
+    console.log(
       "Amostra de produtos (primeiros 3):",
       produtos.slice(0, 3).map((p) => ({
         nome: p.des_item || p.nom_item,
@@ -581,11 +612,20 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
         (p) => p.cod_item !== codItem,
       );
 
+      console.log(
         `Produto removido de todas as empresas: ${produto.des_item || produto.nom_item}`,
       );
     } else {
       this.produtosSelecionadosSet.add(codItem);
       this.produtosSelecionados.push(produto);
+      console.log(`=== PRODUTO ADICIONADO ===`);
+      console.log(`Nome: ${produto.des_item || produto.nom_item}`);
+      console.log(`Código Item: ${produto.cod_item}`);
+      console.log(`Código Empresa: ${produto.cod_empresa}`);
+      console.log(`Nome Empresa: ${produto.nom_fantasia}`);
+      console.log(`Possui cod_empresa?`, !!produto.cod_empresa);
+      console.log(`Possui nom_fantasia?`, !!produto.nom_fantasia);
+      console.log(
         `Total produtos selecionados agora:`,
         this.produtosSelecionados.length,
       );
@@ -600,6 +640,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
           );
         }
       });
+      console.log(
         `Distribuição por empresa:`,
         Array.from(empresasCount.entries()).map(
           ([cod, qtd]) => `Empresa ${cod}: ${qtd} produto(s)`,
@@ -622,6 +663,7 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
   }
 
   onSubgrupoChange() {
+    console.log("Subgrupo selecionado:", this.subgrupoSelecionado);
     this.produtosBusca = "";
     this.filtrarProdutos();
   }
@@ -688,8 +730,12 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
       (p) => p.cod_item === codItem,
     );
 
+    console.log(`=== SELECIONANDO PRODUTO ÚNICO ===`);
+    console.log(
       `Produto: ${produtoExemplo.des_item || produtoExemplo.nom_item}`,
     );
+    console.log(`Código: ${codItem}`);
+    console.log(
       `Encontradas ${variacoesProduto.length} variação(ões) em empresas diferentes`,
     );
 
@@ -708,11 +754,13 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
 
       if (!jaAdicionado) {
         this.produtosSelecionados.push(variacao);
+        console.log(
           `  → Adicionado: Empresa ${variacao.cod_empresa} - ${variacao.nom_fantasia}`,
         );
       }
     });
 
+    console.log(
       `Total produtos selecionados agora: ${this.produtosSelecionados.length}`,
     );
   }
@@ -728,6 +776,8 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
       { nom_fantasia: string; cod_empresa: number; items: any[] }
     >();
 
+    console.log("=== DEBUG empresasComProdutosSelecionados ===");
+    console.log(
       "Total de produtos selecionados:",
       this.produtosSelecionados.length,
     );
@@ -735,12 +785,15 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
     this.produtosSelecionados.forEach((produto) => {
       // Verificar se o produto tem as propriedades necessárias
       if (!produto.cod_empresa) {
+        console.warn(`[AVISO] Produto sem cod_empresa:`, produto);
         return; // Pular este produto
       }
 
       if (!produto.nom_fantasia) {
+        console.warn(`[AVISO] Produto sem nom_fantasia:`, produto);
       }
 
+      console.log(
         `Produto: ${produto.des_item || produto.nom_item}, Empresa: ${produto.cod_empresa} - ${produto.nom_fantasia}`,
       );
 
@@ -757,6 +810,8 @@ export class NegociacaoProdutosPistaPage implements OnInit, OnDestroy {
     const result = Array.from(empresasMap.values()).sort(
       (a, b) => a.cod_empresa - b.cod_empresa,
     );
+    console.log("Total de empresas com produtos selecionados:", result.length);
+    console.log(
       "Empresas:",
       result.map((e) => ({
         cod: e.cod_empresa,

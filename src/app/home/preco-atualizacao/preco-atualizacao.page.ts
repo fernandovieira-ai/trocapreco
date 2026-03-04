@@ -572,6 +572,18 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
 
   // ========== BUSCA DE PREÇOS ==========
   async buscarPrecos() {
+    console.log("=== Buscar Preços - Filtros aplicados ===");
+    console.log("Empresas:", this.empresasSelecionadas);
+    console.log("Items:", this.itemsSelecionados);
+    console.log("Clientes:", this.clientesSelecionados);
+    console.log("Formas Pagto:", this.formasPagtoSelecionadas);
+    console.log(
+      "Tipo Negociação:",
+      this.tipoNegociacao,
+      "| Tipo:",
+      typeof this.tipoNegociacao,
+    );
+
     const loading = await this.loadingCtrl.create({
       message: "Buscando preços...",
       duration: 60000,
@@ -588,10 +600,15 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
         ? this.formasPagtoSelecionadas
         : [0];
 
+    console.log("=== Valores convertidos para envio ao backend ===");
+    console.log("Items:", items);
+    console.log("Clientes:", clientes);
+    console.log("Formas Pagto:", formasPagto);
 
     // Preço menor que só é usado quando tipo for 'P' (Preço Fixo)
     const precoMenorQue =
       this.tipoNegociacao === "P" ? this.precoMenorQue || 0 : 0;
+    console.log("Preço Menor Que:", precoMenorQue);
 
     this.movimento
       .buscaPrecoEmsys(
@@ -605,10 +622,14 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
       )
       .pipe(
         tap((data) => {
+          console.log("=== Resposta completa da API ===", data);
+          console.log("=== data.message ===", data.message);
 
           this.precosEncontrados = data.message || [];
 
+          console.log("=== Preços encontrados (primeiros 3) ===");
           this.precosEncontrados.slice(0, 3).forEach((p, idx) => {
+            console.log(`Preço ${idx}:`, {
               cod_empresa: p.cod_empresa,
               nom_fantasia: p.nom_fantasia,
               cod_item: p.cod_item,
@@ -1369,8 +1390,6 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
       message = error.error.message;
     }
 
-    if (this.alert) {
-      this.alert.presentAlert("Erro", "", message);
-    }
+    this.alert.presentAlert("Erro", "", message);
   }
 }

@@ -53,6 +53,8 @@ export class HomePage implements OnInit {
 
     //this.showLoading('Buscando Empresas...', 50000);
 
+    console.log(this.auth.userLogado);
+
     this.movimento
       .buscaEmpresasBase(
         this.auth.userLogado.schema,
@@ -107,6 +109,7 @@ export class HomePage implements OnInit {
 
   alterarSenha() {
     this.alert.presentAlertPromptSenha().then((data) => {
+      console.log(data[0]);
       if (data[0] === "" || data[0].length < 4) {
         this.alert.presentToast("Senha Inválida", 3000);
       } else {
@@ -184,7 +187,9 @@ export class HomePage implements OnInit {
     // Se encontrar o item, remove-o do array
     if (index !== -1) {
       array.splice(index, 1);
+      console.log(`Item com o código de empresa ${codEmpresa} removido.`);
     } else {
+      console.log(`Item com o código de empresa ${codEmpresa} não encontrado.`);
     }
   }
 
@@ -195,7 +200,9 @@ export class HomePage implements OnInit {
     // Se encontrar o item, remove-o do array
     if (index !== -1) {
       array.splice(index, 1);
+      console.log(`Item com o código de empresa ${codEmpresa} removido.`);
     } else {
+      console.log(`Item com o código de empresa ${codEmpresa} não encontrado.`);
     }
   }
 
@@ -291,12 +298,15 @@ export class HomePage implements OnInit {
   abrirUsuarios() {
     const schema = this.auth.userLogado.schema;
 
+    console.log("Atualizando usuários do schema:", schema);
+
     // Abre o modal imediatamente
     this.setOpen(true);
 
     // Atualiza os usuários em background
     this.movimento.atualizaUsuarios(schema).subscribe({
       next: (data) => {
+        console.log("Usuários atualizados com sucesso:", data);
         // Recarrega a lista após atualizar
         this.buscaUsuarios();
       },
@@ -371,6 +381,8 @@ export class HomePage implements OnInit {
   }
 
   executarSincronizacao() {
+    console.log("===== INÍCIO SINCRONIZAÇÃO FRONTEND =====");
+    console.log("Timestamp:", new Date().toISOString());
 
     this.isSyncInProgress = true;
     // Não mostra loading que bloqueia a tela
@@ -383,21 +395,28 @@ export class HomePage implements OnInit {
     // Se não tiver, usa o código da empresa do usuário logado
     let codEmpresa: number;
 
+    console.log("Dados disponíveis para busca de empresa:");
+    console.log("  - this.empresas.length:", this.empresas?.length || 0);
+    console.log(
       "  - auth.userLogado.empresa.length:",
       this.auth.userLogado.empresa?.length || 0,
     );
 
     if (this.empresas && this.empresas.length > 0) {
       codEmpresa = this.empresas[0].cod_empresa;
+      console.log(
         "✓ Usando código da primeira empresa da tab_base:",
         codEmpresa,
       );
+      console.log("  Empresa completa:", this.empresas[0]);
     } else if (
       this.auth.userLogado.empresa &&
       this.auth.userLogado.empresa.length > 0
     ) {
       // auth.userLogado.empresa é um array, pega o primeiro elemento
       codEmpresa = this.auth.userLogado.empresa[0];
+      console.log("✓ Usando código da empresa do usuário logado:", codEmpresa);
+      console.log("  Array de empresas:", this.auth.userLogado.empresa);
     } else {
       console.error("✗ ERRO: Nenhuma empresa encontrada para sincronização");
       this.isSyncInProgress = false;
@@ -408,8 +427,23 @@ export class HomePage implements OnInit {
       return;
     }
 
+    console.log("---");
+    console.log("Schema a ser usado:", schema);
+    console.log("Código da empresa (param1):", codEmpresa);
+    console.log("---");
+    console.log("Parâmetros completos da procedure:");
+    console.log("  schema_base:", schema);
+    console.log("  param1:", codEmpresa, "(cod_empresa)");
+    console.log("  param2:", "S", "(Sincronizar)");
+    console.log("  param3:", 0);
+    console.log("  param4:", "R", "(Registro)");
+    console.log("---");
+    console.log("SQL esperado no backend:");
+    console.log(`  SET search_path TO ${schema}, public;`);
+    console.log(
       `  SELECT zmaisz.sp_atualiza_cadastro(${codEmpresa}, 'S', 0, 'R');`,
     );
+    console.log("===== CHAMANDO SERVIÇO =====");
 
     this.movimento
       .sincronizaCadastros(schema, codEmpresa, "S", 0, "R")
@@ -417,13 +451,20 @@ export class HomePage implements OnInit {
         timeout(560000),
         finalize(() => {
           // Garante que o estado seja resetado em qualquer caso
+          console.log("Finalizando sincronização (finalize operator)");
           this.isSyncInProgress = false;
         }),
       )
       .subscribe({
         next: (data) => {
+          console.log("===== RESPOSTA DO SERVIDOR RECEBIDA =====");
+          console.log("Tipo de resposta:", typeof data);
+          console.log("Resposta completa:", JSON.stringify(data, null, 2));
+          if (data.message) console.log("Mensagem:", data.message);
           if (data.registros_atualizados)
+            console.log("Registros atualizados:", data.registros_atualizados);
           if (data.success !== undefined)
+            console.log("Status de sucesso:", data.success);
         },
         error: (err) => {
           console.error("===== ERRO NA SINCRONIZAÇÃO =====");
@@ -437,6 +478,8 @@ export class HomePage implements OnInit {
           this.handleErrorSincronizacao(err);
         },
         complete: () => {
+          console.log("===== SINCRONIZAÇÃO CONCLUÍDA =====");
+          console.log("Observable completado com sucesso");
           // Mostra toast de sucesso
           this.alert.presentToast("Dados sincronizados com sucesso!", 2000);
           // Recarrega os dados sem deslogar
@@ -449,6 +492,7 @@ export class HomePage implements OnInit {
 
   mostrarResultadoSincronizacao(data: any) {
     // Apenas registra o resultado, sem mostrar alertas
+    console.log("Resultado da sincronização:", data);
     // O usuário verá o toast de "Dados atualizados com sucesso!"
     // que será exibido pela função atualizarDadosAposSincronizacao
   }
