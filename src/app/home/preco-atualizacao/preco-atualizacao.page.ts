@@ -1274,8 +1274,29 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
     this.negociacoesSelecionadas.forEach((index) => {
       const preco = this.precosEncontrados[index];
 
-      // Usar o preço de venda da tabela tab_custo_preco como base para cálculo
-      const precoAtual = preco.val_preco_venda || 0;
+      // Identificar qual é o tipo de preço (A, B, C, D ou E) baseado no ind_tipo_preco_base
+      const tipoPreco = preco.ind_tipo_preco_base || "A";
+
+      // Usar o preço correto como base para cálculo
+      let precoAtual = 0;
+      switch (tipoPreco) {
+        case "A":
+          precoAtual = preco.val_preco_venda_a || preco.val_preco_venda || 0;
+          break;
+        case "B":
+          precoAtual = preco.val_preco_venda_b || preco.val_preco_venda || 0;
+          break;
+        case "C":
+          precoAtual = preco.val_preco_venda_c || preco.val_preco_venda || 0;
+          break;
+        case "D":
+          precoAtual = preco.val_preco_venda_d || preco.val_preco_venda || 0;
+          break;
+        case "E":
+          precoAtual = preco.val_preco_venda_e || preco.val_preco_venda || 0;
+          break;
+      }
+
       let novoPreco = precoAtual;
 
       // Atualizar ind_percentual_valor baseado no tipo de cálculo
@@ -1305,7 +1326,24 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
         preco.ind_tipo_negociacao = "D"; // Desconto
       }
 
-      preco.val_novo_preco_a = novoPreco;
+      // Setar o campo correto baseado no tipo de preço
+      switch (tipoPreco) {
+        case "A":
+          preco.val_novo_preco_a = novoPreco;
+          break;
+        case "B":
+          preco.val_novo_preco_b = novoPreco;
+          break;
+        case "C":
+          preco.val_novo_preco_c = novoPreco;
+          break;
+        case "D":
+          preco.val_novo_preco_d = novoPreco;
+          break;
+        case "E":
+          preco.val_novo_preco_e = novoPreco;
+          break;
+      }
     });
 
     this.alert.presentAlert(
