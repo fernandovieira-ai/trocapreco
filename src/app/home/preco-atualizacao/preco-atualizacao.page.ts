@@ -1369,6 +1369,8 @@ export class PrecoAtualizacaoPage implements OnInit, OnDestroy {
       message = error.error.message;
     }
 
-    this.alert.presentAlert("Erro", "", message);
+    if (this.alert) {
+      this.alert.presentAlert("Erro", "", message);
+    }
   }
 }
